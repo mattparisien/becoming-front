@@ -2,6 +2,7 @@
 
 import { usePageTransition } from '@/context/PageTransitionContext';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { CSSProperties, MouseEvent, ReactNode, useEffect, useRef } from 'react';
 
 interface TransitionLinkProps {
@@ -80,8 +81,14 @@ export default function TransitionLink({ href, children, className, onClick, sty
   };
 
   return (
-    <a href={normalizedHref} onClick={handleClick} className={className} style={style}>
+    <Link 
+      href={normalizedHref} 
+      onClick={handleClick} 
+      className={className} 
+      style={style}
+      prefetch={true}
+    >
       {children}
-    </a>
+    </Link>
   );
 }
