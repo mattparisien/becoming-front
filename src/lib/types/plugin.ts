@@ -1,0 +1,14 @@
+export interface Plugin {
+  id: string;
+  gid: string; // Global ID for the plugin
+  variantId: string;
+  variantGid: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+  featured: boolean;
+  size: "small" | "medium" | "large";
+  shopifyVariantId?: string; // Shopify variant ID for checkout
+}

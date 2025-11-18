@@ -1,0 +1,9 @@
+export const DEFAULT_LOCALE: string = 'en' as const;
+export const DEFAULT_COUNTRY: string = 'ca' as const;
+export const PAGE_TRANSITION_IN_DURATION = 500;
+export const PAGE_TRANSITION_PAUSE_DURATION = 1400;
+export const PAGE_TRANSITION_OUT_DURATION = 500;
+export const PAGE_TRANSITION_EASE = "var(--ease-power2-in-out)";
+export const LOCATION_PREFERENCES_COOKIE_KEY = "app.prefs"
+export const INTRO_PLAYED_COOKIE_KEY = "intro_played"
+export const INTRO_PLAYED_EXPIRY_DAYS = 7;

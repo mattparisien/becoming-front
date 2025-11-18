@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #232323;
+  --font-roobert: "Roobert", sans-serif;
+  --font-dida: "Dida", sans-serif;
+  --font-editeur: "Editeur";
+  --footer-height: 90vh;
+  --main-footer-offset: 4vw;
+  --header-height: 4rem;
+  --screen-minus-header-height: calc(100vh - var(--header-height));
+}
+
+
+@theme inline {
+  --color-background: var(--bg-color);
+  --color-foreground: var(--fg-color);
+  --color-accent: var(--accent-color);
+  --color-foreground-menu: var(--fg-color-menu);
+  --color-background-menu: var(--bg-color-menu);
+
+  --font-sans: var(--font-roobert);
+  --font-mono: var(--font-di-grotesk);
+  --font-serif: var(--font-editeur);
+  --font-logo: var(--font-dida);
+
+  --height-footer: var(--footer-height);
+  --height-header: var(--header-height);
+
+  --padding-header: var(--header-height);
+  --spacing-header: var(--header-height);
+  --spacing-main-footer-offset: var(--main-footer-offset);
+  --padding-footer: calc(var(--footer-height) - var(--main-footer-offset));
+
+  --z-header: 5;
+  --z-menu: 10;
+  
+
+  /* Linear */
+  --ease-linear: cubic-bezier(0, 0, 1, 1);
+
+  /* Power (similar to GSAP's Power easings) */
+  --ease-power1-in: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  --ease-power1-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-power1-in-out: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+
+  --ease-power2-in: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  --ease-power2-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-power2-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+
+  --ease-power3-in: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+  --ease-power3-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-power3-in-out: cubic-bezier(0.86, 0, 0.07, 1);
+
+  --ease-power4-in: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+  --ease-power4-out: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-power4-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  /* Expo */
+  --ease-expo-in: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  --ease-expo-out: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-expo-in-out: cubic-bezier(1, 0, 0, 1);
+
+  /* Circ */
+  --ease-circ-in: cubic-bezier(0.6, 0.04, 0.98, 0.335);
+  --ease-circ-out: cubic-bezier(0.075, 0.82, 0.165, 1);
+  --ease-circ-in-out: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+
+  /* Back */
+  --ease-back-in: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+  --ease-back-out: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-back-in-out: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Elastic (approximate) */
+  --ease-elastic-in: cubic-bezier(0.47, -0.11, 0.95, -0.15);
+  --ease-elastic-out: cubic-bezier(0.3, 1.4, 0.5, 1);
+  --ease-elastic-in-out: cubic-bezier(0.86, -0.6, 0.07, 1.6);
+
+  /* Bounce (approximate) */
+  --ease-bounce-in: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+  --ease-bounce-out: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-bounce-in-out: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+}
+
+@layer components {
+
+  :root {
+    --transition-duration: 600ms;
+    --transition-pause: 200ms;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s var(--ease-power2-out) forwards;
+    /* Ensure final state is maintained after animation */
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .line,
+  .word {
+    @apply overflow-hidden;
+  }
+
+  .duration-transition-layer {
+    @apply duration-[var(--transition-duration)];
+  }
+
+  .menu {
+    --menu-delay: calc(var(--transition-duration) / 2);
+  }
+
+  .transition-transition-layer {
+    @apply ease-expo-in-out;
+  }
+
+  .delay-transition-layer-out {
+    --transition-delay-out: calc(var(--transition-duration) - 250ms);
+    @apply delay-[var(--transition-delay-out)];
+  }
+
+  .delay-menu-nav-in {
+    --menu-delay: calc(var(--transition-duration) / 2);
+    @apply delay-[var(--menu-delay)];
+  }
+
+  .delay-menu-nav-out {
+    --menu-delay: calc(var(--transition-duration) * 0.2);
+    @apply delay-[var(--menu-delay)];
+  }
+
+  .delay-menu-header-in {
+    --menu-delay-header-in: calc(var(--transition-duration) * 0.15);
+    @apply delay-[var(--menu-delay-header-in)];
+  }
+
+  .delay-menu-header-out {
+    --menu-delay-header-out: calc(var(--transition-duration) * 0.60);
+    @apply delay-[var(--menu-delay-header-out)];
+  }
+
+  .min-h-screen-minus-header {
+    min-height: calc(100vh - var(--header-height));
+  }
+
+  .max-h-screen-minus-header {
+    max-height: calc(100vh - var(--header-height));
+  }
+
+  /* Custom dashed underline utility
+    Adjust --dash-length and --dash-gap for rhythm.
+    NOTE: Uses background-image instead of border-style to allow longer dash pattern.
+  */
+  .underline-dash {
+    --dash-length: 7px; /* length of each dash */
+    --dash-gap: 4px; /* gap between dashes */
+    --underline-thickness: 1.6px; /* height of underline */
+    --underline-rise: 0.28em; /* move line up towards text without changing leading */
+    border-bottom: 0 !important;
+    background-image: repeating-linear-gradient(
+      90deg,
+      currentColor 0,
+      currentColor var(--dash-length),
+      transparent var(--dash-length),
+      transparent calc(var(--dash-length) + var(--dash-gap))
+    );
+    background-position: left calc(100% - var(--underline-rise));
+    background-size: 100% var(--underline-thickness);
+    background-repeat: no-repeat;
+    transition: background-size 150ms var(--ease-power2-out), color 150ms var(--ease-power2-out);
+  }
+
+  /* On focus, switch to a solid underline for clarity/accessibility */
+  .underline-dash:focus,
+  .underline-dash:focus-visible {
+    background-image: linear-gradient(90deg, currentColor, currentColor);
+  }
+
+  .form-input {
+    @apply h-[3vw] box-border leading-[40px] focus:outline-none border-b border-foreground/70 w-[20vw] font-sans text-[3vw] text-accent;
+  }
+
+  /* Clear underline for links inside paragraphs (PortableText prose) */
+  .prose p a {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.15em;
+  }
+  .prose p a:hover {
+    text-decoration-thickness: 3px;
+  }
+  .prose p a:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+* {
+  font-variant-ligatures: none !important;
+}
+
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-roobert), sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "name": "Magnetic Button",
+    "description": "Beautiful responsive image galleries with lightbox support",
+    "price": 49.99,
+    "image": "/images/magnetic-button-demo.gif",
+    "category": "Media",
+    "featured": true,
+    "size": "large"
+  },
+  {
+    "id": "2",
+    "name": "Mouse Follower",
+    "description": "Easy drag-and-drop form builder",
+    "price": 29.99,
+    "image": "/images/mouse-follower-demo.gif",
+    "category": "Forms",
+    "featured": false,
+    "size": "small"
+  },
+  {
+    "id": "3",
+    "name": "Shuffled Text Link",
+    "description": "Boost your site's search rankings",
+    "price": 79.99,
+    "image": "/images/shuffled-text-link-demo.gif",
+    "category": "SEO",
+    "featured": true,
+    "size": "medium"
+  }
+]
