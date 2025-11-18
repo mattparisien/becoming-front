@@ -1,10 +1,9 @@
-import { defineQuery } from 'next-sanity'
 
-export const PRODUCTS_QUERY = defineQuery(`*[_type == "product"] | order(_createdAt desc)[]{
+export const PRODUCTS_QUERY = `*[_type == "product"] | order(_createdAt desc)[]{
   ...
-}`)
+}`
 
-export const PRODUCT_QUERY = defineQuery(`
+export const PRODUCT_QUERY = `
     *[_type == "product" && store.slug.current == $slug][0]{
     ...,
     additionalInfo[language == $language]{
@@ -18,9 +17,9 @@ export const PRODUCT_QUERY = defineQuery(`
     }
   }
 
-`)
+`
 
-export const THEME_QUERY = defineQuery(`*[_type == "theme" && title == "Site Theme"][0]{
+export const THEME_QUERY = `*[_type == "theme" && title == "Site Theme"][0]{
   ...,
   palette->{
     "bg": backgroundColor->{
@@ -40,9 +39,9 @@ export const THEME_QUERY = defineQuery(`*[_type == "theme" && title == "Site The
       value
     }
   }
-}`)
+}`
 
-export const GLOBAL_DATA_QUERY = defineQuery(`{
+export const GLOBAL_DATA_QUERY = `{
   "seo": *[_type == "settings"][0]{
     "seo": {
       "title": coalesce(
@@ -162,9 +161,9 @@ export const GLOBAL_DATA_QUERY = defineQuery(`{
     label,
     code
   } 
-}`);
+}`;
 
-export const PAGE_QUERY = defineQuery(`*[_type == "page" && slug.current == $slug && language == $locale && isActive == true]{
+export const PAGE_QUERY = `*[_type == "page" && slug.current == $slug && language == $locale && isActive == true]{
   title,
   "slug": slug.current,
   seo{
@@ -178,9 +177,9 @@ export const PAGE_QUERY = defineQuery(`*[_type == "page" && slug.current == $slu
         "shopifyFetchCollectionKey": "product"
     },
   }
-}`);
+}`;
 
-export const GET_ALL_PAGES_QUERY = defineQuery(`*[_type == "page" && isActive == true]{
+export const GET_ALL_PAGES_QUERY = `*[_type == "page" && isActive == true]{
    title,
   "slug": slug.current,
   seo{
@@ -195,11 +194,11 @@ export const GET_ALL_PAGES_QUERY = defineQuery(`*[_type == "page" && isActive ==
         "shopifyFetchCollectionKey": "product"
     },
   }
-}`);
+}`;
 
-export const GET_ALL_PAGE_SLUGS_QUERY = defineQuery(`*[_type == "page" && isActive == true && seo.excludeFromSearchResults == false]{ "slug": slug.current, "language": language }`);  
+export const GET_ALL_PAGE_SLUGS_QUERY = `*[_type == "page" && isActive == true && seo.excludeFromSearchResults == false]{ "slug": slug.current, "language": language }`;
 
-export const EXCLUDED_SLUGS_QUERY = defineQuery(`*[_type == "demo" || _type == "installationGuide" || (_type == "page" && seo.excludeFromSearchResults == true)]{ 
+export const EXCLUDED_SLUGS_QUERY = `*[_type == "demo" || _type == "installationGuide" || (_type == "page" && seo.excludeFromSearchResults == true)]{ 
   _type == "demo" => {
     "slug": "/*" + "/demos/" + slug.current
   },
@@ -209,18 +208,18 @@ export const EXCLUDED_SLUGS_QUERY = defineQuery(`*[_type == "demo" || _type == "
   _type == "page" => {
     "slug": slug.current
   }
- }`);
+ }`;
 
-export const SEO_QUERY = defineQuery(`
+export const SEO_QUERY = `
   *[_type == $type && slug.current == $slug && isActive == true][0]{
       seo{
         title,
         description
       }
     }
-`);
+`;
 
-export const PAGE_NOT_FOUND_QUERY = defineQuery(`*[_type == "settings"][0]{
+export const PAGE_NOT_FOUND_QUERY = `*[_type == "settings"][0]{
   ...coalesce(
     localizedNotFoundPages[language == $language][0]{
       ...notFound{
@@ -259,9 +258,9 @@ export const PAGE_NOT_FOUND_QUERY = defineQuery(`*[_type == "settings"][0]{
   }
     }
   )
-}`)
+}`
 
-export const TARGET_PAGE_BY_SOURCE_LOCALE = defineQuery(`*[_type == "page" && slug.current == $slug && isActive == true][0]{
+export const TARGET_PAGE_BY_SOURCE_LOCALE = `*[_type == "page" && slug.current == $slug && isActive == true][0]{
   ...*[
     _type == "translation.metadata" && references(^._id)
   ]{
@@ -273,24 +272,24 @@ export const TARGET_PAGE_BY_SOURCE_LOCALE = defineQuery(`*[_type == "page" && sl
     }
   }
   }[0]
-}`)
+}`
 
-export const DEMO_QUERY = defineQuery(`*[_type == "demo" && slug.current == $slug && language == $language]{
+export const DEMO_QUERY = `*[_type == "demo" && slug.current == $slug && language == $language]{
   title,
   "slug": slug.current,
   pluginJSON
-}[0]`);
+}[0]`;
 
-export const INSTALLATION_GUIDE_QUERY = defineQuery(`*[_type == "installationGuide" && slug.current == $slug && language == $language && isActive == true][0]{
+export const INSTALLATION_GUIDE_QUERY = `*[_type == "installationGuide" && slug.current == $slug && language == $language && isActive == true][0]{
   "title": product->store.title,
     "image": product->store{
       "url": previewImageUrl
     },
   content,
   "slug": product->store.slug.current
-}`)
+}`
 
-export const INSTALLATION_GUIDES_QUERY = defineQuery(`*[_type == "installationGuide" && isActive == true && language == $language]{
+export const INSTALLATION_GUIDES_QUERY = `*[_type == "installationGuide" && isActive == true && language == $language]{
   "title": product->store.title,
     "image": product->store{
       "url": previewImageUrl
@@ -298,4 +297,4 @@ export const INSTALLATION_GUIDES_QUERY = defineQuery(`*[_type == "installationGu
   content,
   language,
   "slug": product->store.slug.current
-}`)
+}`
