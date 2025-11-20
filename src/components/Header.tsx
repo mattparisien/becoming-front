@@ -104,7 +104,7 @@ const Header = ({ title, countryCode, initialCartCount }: HeaderProps) => {
             </div>
 
             {!isIntroActive && (
-              <div className="flex gap-x-3 sm:gap-x-4 lg:gap-x-6 text-xl lg:text-2xl transition-opacity duration-300">
+              <div className="flex gap-x-3 sm:gap-x-4 lg:gap-x-6 text-lg sm:text-xl lg:text-2xl transition-opacity duration-300">
                 <button
                   onClick={openLocationModal}
                   className={classNames(`cursor-pointer hidden md:flex items-center relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-current after:opacity-0 hover:after:opacity-100`,
