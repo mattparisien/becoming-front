@@ -81,7 +81,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
               <h2 className="text-3xl font-serif text-foreground">{t.cart} ({getTotalItems()})</h2>
               <button
                 onClick={onClose}
-                className="text-2xl cursor-pointer"
+                className="text-2xl cursor-pointer text-foreground"
                 aria-label={t.closeCart}
               >
                 ✕
