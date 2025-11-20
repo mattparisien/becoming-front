@@ -27,7 +27,7 @@ const TextModule = ({ content, contentMaxWidth, headingFont = 'sans' }: TextModu
             h3: ({ children }) => <h3 className={classNames("text-3xl mb-5", fontClass)}>{children}</h3>,
             h4: ({ children }) => <h4 className={classNames("text-xl mb-4 mt-8", fontClass)}>{children}</h4>,
             h5: ({ children }) => <h5 className={classNames("text-sm font-medium mb-4 mt-6", fontClass)}>{children}</h5>,
-            h6: ({ children }) => <h6 className={classNames("text-sm mb-3 mt-6", fontClass)}>{children}</h6>,
+            h6: ({ children }) => <h6 className={classNames("text-sm  mb-2 mt-6", fontClass)}>{children}</h6>,
             normal: ({ children }) => <p className="mb-5 leading-relaxed">{children}</p>,
             small: ({ children }) => <p className="text-sm mb-4 leading-relaxed">{children}</p>,
             extraSmall: ({ children }) => <p className="text-xs mb-3 leading-relaxed">{children}</p>,
@@ -120,7 +120,7 @@ const TextModule = ({ content, contentMaxWidth, headingFont = 'sans' }: TextModu
             },
         },
         list: {
-            bullet: ({ children }) => <ul className="mb-5">{children}</ul>,
+            bullet: ({ children }) => <ul className="mb-5 space-y-1">{children}</ul>,
             number: ({ children }) => <ol className="list-decimal list-inside mb-5 space-y-2">{children}</ol>,
         },
         listItem: {
@@ -143,7 +143,7 @@ const TextModule = ({ content, contentMaxWidth, headingFont = 'sans' }: TextModu
     }
 
     return (
-        <div className={classNames("prose prose-lg font-light mx-auto [&>:first-child]:mt-0", {
+        <div className={classNames("prose prose-lg font-light mx-auto [&>:first-child]:mt-0 [&_li_p]:mb-0", {
             [maxWidthClassMap[contentMaxWidth as keyof typeof maxWidthClassMap]]: contentMaxWidth,
             'max-w-none': !contentMaxWidth,
         })}>
