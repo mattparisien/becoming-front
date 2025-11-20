@@ -212,7 +212,7 @@ export default async function LocaleLayout({
                   <MenuWrapper items={menuLinks} countryCode={country.toUpperCase()} />
                   <IntroWrapper />
                   <Main>
-                    <div className={`font-sans min-h-[calc(100vh-4rem)] transition-opacity duration-300 rounded-b-4xl pb-main-footer-offset`}>
+                    <div className={`font-sans min-h-screen-minus-header transition-opacity duration-300 rounded-b-4xl pb-main-footer-offset`}>
                       {children}
                     </div>
                   </Main>
