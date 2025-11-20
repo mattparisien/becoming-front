@@ -31,7 +31,7 @@ const Main = ({ children }: MainProps) => {
 
     return (
         <main
-            className="min-h-screen-minus-header bg-bg pt-header sticky z-30 pointer-events-none [&>*]:pointer-events-auto [&>*]:bg-background"
+            className="min-h-screen-minus-header pt-header sticky z-30 pointer-events-none [&>*]:pointer-events-auto [&>*]:bg-background"
             style={{ paddingBottom: `calc(${footerHeight}px - var(--main-footer-offset))` }}
         >
             {children}
