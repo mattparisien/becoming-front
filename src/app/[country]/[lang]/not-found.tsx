@@ -1,13 +1,10 @@
-'use client'
-
 import Container from "@/components/Container";
 import Button from "@/components/ui/Button";
-import { useSanityQuery } from "@/hooks/useSanityQuery";
+import { fetchSanityData } from "@/hooks/useServerSideSanityQuery";
 import { DEFAULT_LOCALE } from "@/lib/constants";
 import { PAGE_NOT_FOUND_QUERY } from "@/lib/sanity/queries";
 import { NotFoundPage } from "@/lib/sanity/schema-types";
 import { Metadata } from "next";
-import { useParams } from "next/navigation";
 
 export const metadata: Metadata = {
     title: '404 - Page Not Found',
@@ -18,14 +15,18 @@ export const metadata: Metadata = {
     },
 };
 
+interface PageNotFoundProps {
+    params: Promise<{
+        lang?: string;
+    }>;
+}
+
+const PageNotFound = async () => {
 
 
-const PageNotFound = () => {
-    const { lang } = useParams();
-
-    const { data } = useSanityQuery<NotFoundPage>(PAGE_NOT_FOUND_QUERY, {
+    const data = await fetchSanityData<NotFoundPage>(PAGE_NOT_FOUND_QUERY, {
         params: {
-            language: lang || DEFAULT_LOCALE // Fallback to 'en' if no lang
+            language: DEFAULT_LOCALE
         }
     });
 

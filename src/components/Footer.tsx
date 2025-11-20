@@ -87,38 +87,6 @@ const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, cont
                     </a>
                   );
                 })}
-                {/* <a
-                  href="https://twitter.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-background/70 hover:text-background transition-colors text-2xl"
-                >
-                  𝕏
-                </a>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-background/70 hover:text-background transition-colors text-2xl"
-                >
-                  IG
-                </a>
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-background/70 hover:text-background transition-colors text-2xl"
-                >
-                  GH
-                </a>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-background/70 hover:text-background transition-colors text-2xl"
-                >
-                  LI
-                </a> */}
               </div>
             </div>
           </div>
@@ -216,22 +184,6 @@ const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, cont
               >
                 {contactEmail}
               </a>
-
-              {/* <div className="hidden lg:block mt-6">
-                <p className="text-background/70 font-sans text-sm mb-3">
-                  Subscribe to our newsletter for updates and exclusive offers.
-                </p>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    placeholder="Your email"
-                    className="flex-1 px-4 py-2 bg-background/10 border border-background/20 rounded-lg text-background placeholder:text-background/40 focus:outline-none focus:border-background/40 transition-colors font-sans text-sm"
-                  />
-                  <button className="px-6 py-2 bg-background text-accent font-sans font-medium rounded-lg hover:bg-background/90 transition-colors text-sm whitespace-nowrap">
-                    Sign Up
-                  </button>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>
@@ -239,21 +191,24 @@ const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, cont
         {/* Bottom Bar */}
         <div className="border-t border-background/10 px-6 sm:px-8 lg:px-12 py-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="text-xs md:text-sm flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 text-background/60 text-sm font-sans">
+            <div className="flex flex-wrap items-center justify-center sm:justify-between gap-x-6 gap-y-2 text-background/60 text-xs font-sans w-full">
               <span className="mr-4">&copy; {new Date().getFullYear()} {legalEntityName}. {t.allRightsReserved}</span>
-              {legalBar?.navigation?.items?.map((item, idx) => (
-                <TransitionLink
-                  key={idx}
-                  href={item.slug || '#'}
-                  className="hover:text-background transition-colors"
-                >
-                  {item.label}
-                </TransitionLink>
-              ))}
+              <div className="flex space-x-3">
+                {legalBar?.navigation?.items?.map((item, idx) => (
+                  <TransitionLink
+                    key={idx}
+                    href={item.slug || '#'}
+                    className="hover:text-background transition-colors"
+                  >
+                    {item.label}
+                  </TransitionLink>
+                ))}
+              </div>
+              <div className="text-background/60">
+                {t.madeIn}
+              </div>
             </div>
-            <div className="text-background/60 text-sm font-sans">
-              {t.madeIn}
-            </div>
+
           </div>
         </div>
       </div>
