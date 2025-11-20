@@ -50,7 +50,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       setIsHovered(false);
     };
     
-    const baseStyles = 'relative font-sans font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
+    const baseStyles = 'relative font-sans font-medium transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
     
     const variantStyles = {
       primary: 'bg-foreground text-background',
