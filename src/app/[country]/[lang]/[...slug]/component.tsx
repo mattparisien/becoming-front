@@ -25,7 +25,7 @@ export default function PageComponent({ page }: PageComponentProps) {
     if (!page || modules.length === 0) return notFound();
 
     return (
-        <section className="pt-2 sm:pt-4 md:pt-8 flex items-center justify-center">
+        <section className="vertical-gutters flex items-center justify-center">
             <Container className="w-full">
                 {modules.map((module: SanityModule, index: number) => {
                     const ModuleComponent = moduleComponents[module._type];

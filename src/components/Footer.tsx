@@ -204,7 +204,7 @@ const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, cont
                   </TransitionLink>
                 ))}
               </div>
-              <div className="text-background/60">
+              <div className="hidden md:block text-background/60">
                 {t.madeIn}
               </div>
             </div>

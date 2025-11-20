@@ -214,6 +214,10 @@
     border-radius: 2px;
   }
 
+  .vertical-gutters {
+    @apply pt-6 md:pt-8;
+  }
+
 }
 
 @media (prefers-color-scheme: dark) {
