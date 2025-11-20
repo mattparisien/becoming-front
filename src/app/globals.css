@@ -6,7 +6,7 @@
   --font-roobert: "Roobert", sans-serif;
   --font-dida: "Dida", sans-serif;
   --font-editeur: "Editeur";
-  --footer-height: 90vh;
+  --footer-height: 90dvh;
   --header-height: 4rem;
   --main-footer-offset: 2.5rem;
   --screen-minus-header-height: calc(100dvh - var(--header-height));

@@ -78,7 +78,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
           {/* Header */}
           <div className="border-b border-foreground/10 p-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-serif">{t.cart} ({getTotalItems()})</h2>
+              <h2 className="text-3xl font-serif text-foreground">{t.cart} ({getTotalItems()})</h2>
               <button
                 onClick={onClose}
                 className="text-2xl cursor-pointer"

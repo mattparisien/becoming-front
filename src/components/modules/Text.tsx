@@ -143,7 +143,7 @@ const TextModule = ({ content, contentMaxWidth, headingFont = 'sans' }: TextModu
     }
 
     return (
-        <div className={classNames("prose prose-lg font-light mx-auto [&>:first-child]:mt-0 [&_li_p]:mb-0", {
+        <div className={classNames("text-foreground prose prose-lg font-light mx-auto [&>:first-child]:mt-0 [&_li_p]:mb-0", {
             [maxWidthClassMap[contentMaxWidth as keyof typeof maxWidthClassMap]]: contentMaxWidth,
             'max-w-none': !contentMaxWidth,
         })}>
