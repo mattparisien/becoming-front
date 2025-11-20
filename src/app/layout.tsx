@@ -40,7 +40,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${roobert.variable} ${editeur.variable} ${dida.variable}`}
     >
-      <body className='font-sans antialiased'>
+      <body className='font-sans text-foreground antialiased'>
         {children}
       </body>
     </html>
