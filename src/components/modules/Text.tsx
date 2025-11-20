@@ -26,9 +26,11 @@ const TextModule = ({ content, contentMaxWidth, headingFont = 'sans' }: TextModu
             h2: ({ children }) => <h2 className={classNames("text-4xl leading-[1.2] text-4xl sm:text-5xl xl:text-6xl mb-6", fontClass)}>{children}</h2>,
             h3: ({ children }) => <h3 className={classNames("text-3xl mb-5", fontClass)}>{children}</h3>,
             h4: ({ children }) => <h4 className={classNames("text-xl mb-4 mt-8", fontClass)}>{children}</h4>,
-            h5: ({ children }) => <h5 className={classNames("text-lg font-medium mb-4 mt-6", fontClass)}>{children}</h5>,
-            h6: ({ children }) => <h6 className={classNames("text-lg mb-3 mt-6", fontClass)}>{children}</h6>,
+            h5: ({ children }) => <h5 className={classNames("text-sm font-medium mb-4 mt-6", fontClass)}>{children}</h5>,
+            h6: ({ children }) => <h6 className={classNames("text-sm mb-3 mt-6", fontClass)}>{children}</h6>,
             normal: ({ children }) => <p className="mb-5 leading-relaxed">{children}</p>,
+            small: ({ children }) => <p className="text-sm mb-4 leading-relaxed">{children}</p>,
+            extraSmall: ({ children }) => <p className="text-xs mb-3 leading-relaxed">{children}</p>,
             blockquote: ({ children }) => (
                 <blockquote className="border-l-4 border-gray-300 pl-4 italic my-6">
                     {children}
@@ -118,13 +120,13 @@ const TextModule = ({ content, contentMaxWidth, headingFont = 'sans' }: TextModu
             },
         },
         list: {
-            bullet: ({ children }) => <ul className="mb-5 space-y-2">{children}</ul>,
+            bullet: ({ children }) => <ul className="mb-5">{children}</ul>,
             number: ({ children }) => <ol className="list-decimal list-inside mb-5 space-y-2">{children}</ol>,
         },
         listItem: {
             bullet: ({ children }) => (
                 <li className="flex items-start gap-2">
-                    <IoCheckmark className="mt-1 flex-shrink-0" />
+                    <IoCheckmark className="mt-1 flex-shrink-0 w-3 h-3" />
                     <span className="flex-1">{children}</span>
                 </li>
             ),
