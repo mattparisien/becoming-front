@@ -95,15 +95,15 @@ const LocationModal: React.FC<LocationModalProps> = ({ markets, initialMarketVal
           </svg>
         </button>
 
-        <Dialog.Title className="text-lg font-semibold mb-4">{t.title}</Dialog.Title>
+        <Dialog.Title className="text-lg text-foreground font-semibold mb-4">{t.title}</Dialog.Title>
         <Dialog.Description className="mb-4 text-sm text-foreground/70 font-semibold">
-          {t.currentLocation} {initialMarketValue ? `${initialMarketValue.country.name} (${initialMarketValue.locale})` : 'not selected'}.
+          {t.currentLocation} {initialMarketValue ? `${initialMarketValue.country.name} (${initialMarketValue.locale})` : t.notSelected}.
         </Dialog.Description>
         <Dialog.Description className="mb-4 text-sm text-foreground/70">
           {t.description}
         </Dialog.Description>
         <select
-          className="w-full p-2 border border-foreground/20 rounded mb-4"
+          className="w-full p-2 border border-foreground/20 text-foreground rounded mb-4"
           value={selectedMarket?.country.code + '/' + selectedMarket?.locale}
           onChange={handleChange}
         >

@@ -81,6 +81,7 @@ export interface LocationModalTranslations {
   select: string;
   confirm: string;
   cancel: string;
+  notSelected: string;
 }
 
 export const cartDrawerTranslations: Record<Locale, CartDrawerTranslations> = {
@@ -202,6 +203,7 @@ export const locationModalTranslations: Record<Locale, LocationModalTranslations
     select: 'Select',
     confirm: 'Confirm',
     cancel: 'Cancel',
+    notSelected: 'not selected',
   },
   "fr": {
     title: 'Sélectionnez votre emplacement',
@@ -210,6 +212,7 @@ export const locationModalTranslations: Record<Locale, LocationModalTranslations
     select: 'Sélectionner',
     confirm: 'Confirmer',
     cancel: 'Annuler',
+    notSelected: 'non sélectionné',
   },
 };
 

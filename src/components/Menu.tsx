@@ -73,7 +73,7 @@ export default function Menu({ items, countryCode, onOpenLocationModal }: MenuPr
                 'transition-all duration-500 ease-power2-out delay-[calc(var(--menu-delay)*1.3)]': isMenuOpen,
                 'delay-none duration-100': !isMenuOpen,
             })}>
-                <Container className="pb-4 w-full flex items-end justify-between">
+                <Container className="pb-4 w-full flex items-end justify-between md:justify-end">
                     <button
                         onClick={onOpenLocationModal}
                         className="md:hidden cursor-pointer flex items-center relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-current after:opacity-0 hover:after:opacity-100 transition-all duration-200"

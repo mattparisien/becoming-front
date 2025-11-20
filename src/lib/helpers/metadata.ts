@@ -33,14 +33,17 @@ export const generateRouteMetadata = async (
 
     // Extract parent metadata
     const globalDescription = parentMeta.description;
-    const globalTitle = parentMeta.title;
+    const globalTitle = parentMeta.title?.absolute;
     const globalOG = parentMeta.openGraph || {};
+
+    
 
     // Fetch SEO data from Sanity
     const data = await fetchSanityData<SeoData | null>(
         SEO_QUERY,
         { params: { language: lang, slug: slugString, type: params.type } }
     );
+
 
     // If no SEO data, return parent metadata
     if (!data?.seo) {
@@ -52,7 +55,11 @@ export const generateRouteMetadata = async (
     }
 
     const { title, description, excludeFromSearchResults } = data.seo;
+    const hasPageTitle = typeof title === 'string' && title.trim().length > 0;
     const hasPageDescription = typeof description === 'string' && description.trim().length > 0;
+    
+    // Use page title if available, otherwise fall back to global title
+    const finalTitle = hasPageTitle ? title : globalTitle;
 
     // Get i18n configuration
     const [countryLocaleMap] = await Promise.all([
@@ -81,11 +88,11 @@ export const generateRouteMetadata = async (
     languageAlternates['x-default'] = canonicalUrl;
 
     return {
-        title,
+        ...(finalTitle ? { title: finalTitle } : {}),
         ...(hasPageDescription ? { description } : {}),
         openGraph: {
             ...globalOG,
-            title,
+            ...(finalTitle ? { title: finalTitle } : {}),
             ...(hasPageDescription ? { description } : {}),
             url: `${baseUrl}/${country}/${lang}/${slugString}`,
         },
