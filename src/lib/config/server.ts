@@ -45,8 +45,8 @@ async function _fetchServerConfig(): Promise<ServerConfig> {
     const globalData = await getGlobalData(defaultLocale) as any;
     
     // Extract configuration values
-    const brandName = globalData?.brand?.brandName || process.env.BRAND_NAME || 'Candlelight';
-    const contactEmail = globalData?.contactEmail || process.env.CONTACT_EMAIL || 'hello@candlelight.com';
+    const brandName = globalData?.brand?.brandName || process.env.BRAND_NAME;
+    const contactEmail = globalData?.contactEmail || process.env.CONTACT_EMAIL;
     const siteUrl = process.env.SITE_URL || 'http://localhost:3000';
     const tagline = globalData?.brand?.tagline;
     const description = globalData?.brand?.description;
