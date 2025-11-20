@@ -55,7 +55,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
       {/* Backdrop */}
       <div
         className={classNames(
-          'fixed inset-0 bg-foreground/20 backdrop-blur-sm z-80 transition-opacity duration-300',
+          'fixed inset-0 bg-foreground/20 backdrop-blur-sm text-foreground z-80 transition-opacity duration-300',
           {
             'opacity-100': isOpen,
             'opacity-0 pointer-events-none': !isOpen,

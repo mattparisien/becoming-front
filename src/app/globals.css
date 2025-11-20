@@ -8,8 +8,14 @@
   --font-editeur: "Editeur";
   --footer-height: 90vh;
   --header-height: 4rem;
-  --main-footer-offset: 4rem;
+  --main-footer-offset: 2.5rem;
   --screen-minus-header-height: calc(100dvh - var(--header-height));
+}
+
+@media (min-width: 768px) {
+  :root {
+    --main-footer-offset: 4rem;
+  }
 }
 
 
