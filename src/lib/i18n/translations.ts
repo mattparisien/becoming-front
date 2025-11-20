@@ -212,7 +212,7 @@ export const locationModalTranslations: Record<Locale, LocationModalTranslations
     select: 'Sélectionner',
     confirm: 'Confirmer',
     cancel: 'Annuler',
-    notSelected: 'non sélectionné',
+    notSelected: 'pas sélectionné',
   },
 };
 
