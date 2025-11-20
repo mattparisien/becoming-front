@@ -93,6 +93,7 @@ const Header = ({ title, countryCode, initialCartCount }: HeaderProps) => {
                   className={classNames("overflow-hidden text-4xl flex leading-[0.8]", {
                     'transition-colors': !isIntroActive,
                     'text-background': isMenuOpen,
+                    'text-foreground': !isMenuOpen,
                     'delay-300': !isMenuOpen && !isIntroActive,
                     "invisible": isIntroActive,
                     [durationClass]: !isIntroActive,
