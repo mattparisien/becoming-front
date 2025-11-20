@@ -161,7 +161,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                         </div>
                         <button
                           onClick={() => removeItem(item.id)}
-                          className="cursor-pointer font-sans text-sm text-fg transition-colors underline"
+                          className="text-foreground cursor-pointer font-sans text-sm text-fg transition-colors underline"
                         >
                           {t.remove}
                         </button>
