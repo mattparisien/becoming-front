@@ -1,6 +1,5 @@
 import localFont from 'next/font/local';
 import "./globals.css";
-import GridAnimation from '@/components/GridAnimation';
 
 const roobert = localFont({
   src: './assets/fonts/RoobertCollectionVF.woff2',
@@ -43,7 +42,6 @@ export default function RootLayout({
     >
       <body className='font-sans antialiased'>
         {children}
-        {/* <GridAnimation />  */}
       </body>
     </html>
   );
