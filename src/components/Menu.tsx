@@ -6,6 +6,7 @@ import classNames from "classnames";
 import { useParams } from "next/navigation";
 import { useRef } from "react";
 import Container from "./Container";
+import { CiGlobe } from "react-icons/ci";
 import TransitionLayer from "./TransitionLayer";
 import TransitionLink from "./TransitionLink";
 
@@ -18,9 +19,11 @@ interface MenuItem {
 
 interface MenuProps {
     items: MenuItem[];
+    countryCode: string;
+    onOpenLocationModal: () => void;
 }
 
-export default function Menu({ items }: MenuProps) {
+export default function Menu({ items, countryCode, onOpenLocationModal }: MenuProps) {
 
     const { isMenuOpen, toggleMenu } = useMenu();
     const { isIntroActive } = useIntro();
@@ -70,8 +73,16 @@ export default function Menu({ items }: MenuProps) {
                 'transition-all duration-500 ease-power2-out delay-[calc(var(--menu-delay)*1.3)]': isMenuOpen,
                 'delay-none duration-100': !isMenuOpen,
             })}>
-                <Container className="pb-4 w-full flex items-end justify-end">
-
+                <Container className="pb-4 w-full flex items-end justify-between">
+                    <button
+                        onClick={onOpenLocationModal}
+                        className="md:hidden cursor-pointer flex items-center relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-current after:opacity-0 hover:after:opacity-100 transition-all duration-200"
+                    >
+                        <span className="flex items-center">
+                            <CiGlobe />
+                            <span className="ml-2 leading-none">{countryCode}</span>
+                        </span>
+                    </button>
                     <div>Montr&eacute;al, Canada</div>
                 </Container>
             </div>

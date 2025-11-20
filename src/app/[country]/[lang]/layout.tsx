@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import IntroWrapper from "@/components/IntroWrapper";
 import LocationModal from "@/components/LocationModal";
 import Main from "@/components/Main";
-import Menu from "@/components/Menu";
+import MenuWrapper from "@/components/MenuWrapper";
 import PageTransitionScreen from "@/components/PageTransitionScreen";
 import { CartDrawerProvider } from "@/context/CartDrawerContext";
 import { IntroProvider } from "@/context/IntroContext";
@@ -209,7 +209,7 @@ export default async function LocaleLayout({
                 <CartDrawerProvider>
                   <CartStoreInitializer initialCartCount={serverCartCount} />
                   <Header title={brand.title} countryCode={country.toUpperCase()} initialCartCount={serverCartCount} />
-                  <Menu items={menuLinks} />
+                  <MenuWrapper items={menuLinks} countryCode={country.toUpperCase()} />
                   <IntroWrapper />
                   <Main>
                     <div className={`font-sans min-h-[calc(100vh-4rem)] transition-opacity duration-300 rounded-b-4xl pb-main-footer-offset`}>

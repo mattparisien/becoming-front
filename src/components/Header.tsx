@@ -90,7 +90,7 @@ const Header = ({ title, countryCode, initialCartCount }: HeaderProps) => {
               <TransitionLink href="/" className="flex items-center space-x-3">
                 <Logo
                   text={title}
-                  className={classNames("overflow-hidden text-4xl flex leading-[0.8]", {
+                  className={classNames("overflow-hidden text-3xl sm:text-4xl flex leading-[0.8]", {
                     'transition-colors': !isIntroActive,
                     'text-background': isMenuOpen,
                     'text-foreground': !isMenuOpen,
@@ -107,7 +107,7 @@ const Header = ({ title, countryCode, initialCartCount }: HeaderProps) => {
               <div className="flex gap-x-3 sm:gap-x-4 lg:gap-x-6 text-xl lg:text-2xl transition-opacity duration-300">
                 <button
                   onClick={openLocationModal}
-                  className={classNames(`cursor-pointer flex items-center relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-current after:opacity-0 hover:after:opacity-100`,
+                  className={classNames(`cursor-pointer hidden md:flex items-center relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-current after:opacity-0 hover:after:opacity-100`,
                     durationClass,
                     {
                       'text-background': isMenuOpen,

@@ -7,9 +7,9 @@
   --font-dida: "Dida", sans-serif;
   --font-editeur: "Editeur";
   --footer-height: 90vh;
-  --main-footer-offset: 4vw;
+  --main-footer-offset: 4rem;
   --header-height: 4rem;
-  --screen-minus-header-height: calc(100vh - var(--header-height));
+  --screen-minus-header-height: calc(100dvh - var(--header-height));
 }
 
 
@@ -152,11 +152,11 @@
   }
 
   .min-h-screen-minus-header {
-    min-height: calc(100vh - var(--header-height));
+    min-height: calc(100dvh - var(--header-height));
   }
 
   .max-h-screen-minus-header {
-    max-height: calc(100vh - var(--header-height));
+    max-height: calc(100dvh - var(--header-height));
   }
 
   /* Custom dashed underline utility
