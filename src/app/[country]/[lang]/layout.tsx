@@ -60,7 +60,8 @@ interface GlobalDataQueryResult {
     code: string;
   }[];
   brand: {
-    brandName: string;
+    title: string;
+    companyName: string;
     tagline: string;
     description: string;
     logo: {
@@ -175,7 +176,7 @@ export default async function LocaleLayout({
   const menuLinks = globalData?.menu?.navigation.items || [];
   const menuPalette = globalData?.menu?.theme?.palette || null;
   const footer = globalData?.footer || { _type: 'footerSettings' as const, navigations: [] };
-  const brand = globalData?.brand || { brandName: 'Brand Name', tagline: '', description: '', logo: null, logoAlt: '', favicon: null };
+  const brand = globalData?.brand || { title: "Title", companyName: 'Company Name', tagline: '', description: '', logo: null, logoAlt: '', favicon: null };
   const contactEmail = globalData?.contactEmail || '';
   const markets = globalData?.markets || [];
 
@@ -207,7 +208,7 @@ export default async function LocaleLayout({
               <LocationModalProvider>
                 <CartDrawerProvider>
                   <CartStoreInitializer initialCartCount={serverCartCount} />
-                  <Header title={brand.brandName} countryCode={country.toUpperCase()} initialCartCount={serverCartCount} />
+                  <Header title={brand.title} countryCode={country.toUpperCase()} initialCartCount={serverCartCount} />
                   <Menu items={menuLinks} />
                   <IntroWrapper />
                   <Main>
@@ -215,8 +216,8 @@ export default async function LocaleLayout({
                       {children}
                     </div>
                   </Main>
-                  <PageTransitionScreen text={brand.brandName} />
-                  <Footer {...footer} brandName={brand.brandName} tagLine={brand.tagline} locale={lang as Locale} contactEmail={contactEmail} socialLinks={globalData?.socialLinks || []} />
+                  <PageTransitionScreen text={brand.title} />
+                  <Footer {...footer} brandName={brand.title} legalEntityName={brand.companyName} tagLine={brand.tagline} locale={lang as Locale} contactEmail={contactEmail} socialLinks={globalData?.socialLinks || []} />
                   <LocationModal markets={markets} initialMarketValue={getCurrentLocation(country, lang, markets)} />
                 </CartDrawerProvider>
               </LocationModalProvider>

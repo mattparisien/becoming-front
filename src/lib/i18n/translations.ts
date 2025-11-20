@@ -59,6 +59,7 @@ export interface FooterTranslations {
   followUs: string;
   madeIn: string;
   contactUs: string;
+  allRightsReserved: string;
 }
 
 export interface PasswordProtectTranslations {
@@ -157,12 +158,14 @@ export const footerTranslations: Record<Locale, FooterTranslations> = {
   "en": {
     followUs: 'Follow Us',
     madeIn: 'Made with ♥ in Montréal',
-    contactUs: 'Get in Touch'
+    contactUs: 'Get in Touch',
+    allRightsReserved: 'All rights reserved.',
   },
   "fr": {
     followUs: 'Suivez-nous',
     madeIn: 'Construit avec ♥ à Montréal',
-    contactUs: 'Contactez-nous'
+    contactUs: 'Contactez-nous',
+    allRightsReserved: 'Tous droits réservés.',
   },
 };
 

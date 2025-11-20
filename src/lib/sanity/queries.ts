@@ -142,7 +142,11 @@ export const GLOBAL_DATA_QUERY = `{
     }
   },
   "brand": *[_type == "settings"][0]{
-    brandName,
+    "title": *[_type == "settings"][0].siteTitle,
+    "companyName": coalesce(
+      localizedCompanyNames[language == $locale][0].companyName,
+      localizedCompanyNames[language == "en"][0].companyName
+    ),
     "tagline": coalesce(
       localizedTaglines[language == $locale][0].tagline,
       localizedTaglines[language == "en"][0].tagline
@@ -160,7 +164,7 @@ export const GLOBAL_DATA_QUERY = `{
   "languages": *[_type == "settings"][0].publishedLanguages[]{
     label,
     code
-  } 
+  }
 }`;
 
 export const PAGE_QUERY = `*[_type == "page" && slug.current == $slug && language == $locale && isActive == true]{

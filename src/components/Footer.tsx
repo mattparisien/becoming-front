@@ -25,6 +25,7 @@ interface LegalBar {
 interface FooterProps {
   _type: 'footerSettings';
   brandName: string;
+  legalEntityName: string;
   locale: Locale;
   tagLine: string;
   contactEmail: string;
@@ -45,7 +46,7 @@ const socialMediaRegistry: Record<string, { icon: ReactNode }> = {
   }
 };
 
-const Footer = ({ locale, brandName, tagLine, socialLinks, contactEmail, navigations, legalBar }: FooterProps) => {
+const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, contactEmail, navigations, legalBar }: FooterProps) => {
   const t = getFooterTranslations(locale);
 
 
@@ -239,7 +240,7 @@ const Footer = ({ locale, brandName, tagLine, socialLinks, contactEmail, navigat
         <div className="border-t border-background/10 px-6 sm:px-8 lg:px-12 py-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-xs md:text-sm flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 text-background/60 text-sm font-sans">
-              <span className="mr-4">&copy; {new Date().getFullYear()} {brandName}. All Rights Reserved.</span>
+              <span className="mr-4">&copy; {new Date().getFullYear()} {legalEntityName}. {t.allRightsReserved}</span>
               {legalBar?.navigation?.items?.map((item, idx) => (
                 <TransitionLink
                   key={idx}
