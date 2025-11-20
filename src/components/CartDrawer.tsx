@@ -179,8 +179,8 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
           {items.length > 0 && (
             <div className="border-t border-foreground/10 p-6 space-y-4">
               <div className="flex items-center justify-between text-xl">
-                <span className="text-foreground font-semibold">{t.total}</span>
-                <span className="text-foreground font-bold font-serif text-2xl">
+                <span className="text-foreground">{t.total}</span>
+                <span className="text-foreground font-serif text-2xl">
                   ${getTotalPrice().toFixed(2)}
                 </span>
               </div>
