@@ -125,6 +125,7 @@ const Header = ({ title, countryCode, initialCartCount }: HeaderProps) => {
                     durationClass,
                     {
                       'text-background': isMenuOpen,
+                      'text-foreground': !isMenuOpen,
                       'delay-300': !isMenuOpen,
                     })}
                 >
@@ -135,6 +136,7 @@ const Header = ({ title, countryCode, initialCartCount }: HeaderProps) => {
                     durationClass,
                     {
                       'text-background': isMenuOpen,
+                      'text-foreground': !isMenuOpen,
                       'delay-300': !isMenuOpen,
                     })}
                   onClick={openCartDrawer}
