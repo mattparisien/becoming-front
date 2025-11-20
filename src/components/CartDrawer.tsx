@@ -126,8 +126,8 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div className='flex items-start justify-between text-md'>
 
-                        <h3 className="mb-2 truncate">{item.name}</h3>
-                        <span>
+                        <h3 className="mb-2 truncate text-foreground">{item.name}</h3>
+                        <span className="text-foreground">
                           ${item.price.toFixed(2)}
                         </span>
                       </div>
@@ -135,7 +135,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
 
                       {/* Quantity Controls */}
                       <div className="flex items-end justify-between mb-2">
-                        <div className='flex items-center justify-between gap-3'>
+                        <div className='flex items-center justify-between gap-3 text-foreground'>
                           <button
                             onClick={() => {
                               if (item.quantity > 1) {
@@ -143,17 +143,17 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                               }
                             }}
                             disabled={item.quantity <= 1}
-                            className="leading-[1.1] cursor-pointer text-fg hover:text-foreground disabled:opacity-20 disabled:cursor-not-allowed transition-colors text-lg"
+                            className="leading-[1.1] cursor-pointer text-foreground hover:text-foreground disabled:opacity-20 disabled:cursor-not-allowed transition-colors text-lg"
                             aria-label={t.decreaseQuantity}
                           >
                             −
                           </button>
-                          <span className="font-sans text-sm text-fg text-center leading-[1.1]">
+                          <span className="font-sans text-sm text-foreground text-center leading-[1.1]">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="leading-[1.1] cursor-pointer text-fg hover:text-foreground transition-colors text-lg"
+                            className="leading-[1.1] cursor-pointer text-foreground hover:text-foreground transition-colors text-lg"
                             aria-label={t.increaseQuantity}
                           >
                             +
@@ -179,8 +179,8 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
           {items.length > 0 && (
             <div className="border-t border-foreground/10 p-6 space-y-4">
               <div className="flex items-center justify-between text-xl">
-                <span className="font-semibold">{t.total}</span>
-                <span className="font-bold font-serif text-2xl">
+                <span className="text-foreground font-semibold">{t.total}</span>
+                <span className="text-foreground font-bold font-serif text-2xl">
                   ${getTotalPrice().toFixed(2)}
                 </span>
               </div>
