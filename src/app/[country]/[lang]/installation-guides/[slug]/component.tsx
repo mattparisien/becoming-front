@@ -25,7 +25,7 @@ const InstallationGuideComponent = (props: InstallationGuideProps) => {
                     />
                 )} */}
             </div>
-            {props.content && <Container><TextModule content={props.content} contentMaxWidth="xl" /></Container>}
+            {props.content && <Container><TextModule content={props.content} contentMaxWidth="xl" alignment="left" /></Container>}
         </div>
     );
 }

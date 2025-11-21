@@ -201,6 +201,7 @@ const ProductPageComponent = ({ additionalInfo, ...product }: ProductPageCompone
                 {additionalInfo && additionalInfo.content.length && <TextModule
                   headingFont='serif'
                   content={additionalInfo.content}
+                  alignment="left"
                 />}
                 {/* <h3 className="text-2xl font-serif text-foreground">{t.whatsIncluded}</h3>
                   <ul className="space-y-3 text-foreground/70">
