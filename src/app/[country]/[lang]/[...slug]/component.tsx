@@ -35,7 +35,7 @@ export default function PageComponent({ page }: PageComponentProps) {
     };
 
     const getHeightClass = (height?: string) => {
-        if (height === 'screen') return 'h-screen-minus-header';
+        if (height === 'screen') return 'min-h-screen-minus-header';
         return '';
     };
 

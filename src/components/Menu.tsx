@@ -106,9 +106,10 @@ const NavLink = ({
     return <TransitionLink
         href={link.slug}
         onClick={toggleMenu}
-        className={classNames(`font-light font-serif text-6xl sm:text-7xl leading-[1.2] hover:text-foreground-menu/70 transition-colors ${isActive ? 'underline decoration-2 underline-offset-8' : ''
-            }`, {
-            'char-anim-started': isActive
+        className={classNames(`font-light font-serif text-6xl sm:text-7xl leading-[1.2] transition-colors no-underline relative inline-block after:content-[''] after:absolute after:bottom-[0.1em] after:left-0 after:w-full after:h-[2px] after:bg-[length:10px_2px] after:bg-repeat-x after:bg-[linear-gradient(to_right,currentColor_0,currentColor_6px,transparent_6px,transparent_10px)]`, {
+            'char-anim-started': isActive,
+            'after:opacity-100': isActive,
+            'after:opacity-0 hover:after:opacity-100 hover:after:animate-[dash-slide-steps_0.4s_steps(3)_infinite]': !isActive
         })}
     >
 

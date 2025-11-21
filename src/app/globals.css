@@ -116,6 +116,15 @@
       background-position: 12px 0;
     }
   }
+  
+  @keyframes dash-slide-steps {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 10px 0;
+    }
+  }
 
   .animate-fade-in-up {
     animation: fadeInUp 0.8s var(--ease-power2-out) forwards;
@@ -181,7 +190,7 @@
   .underline-dash {
     --dash-length: 7px; /* length of each dash */
     --dash-gap: 4px; /* gap between dashes */
-    --underline-thickness: 1.6px; /* height of underline */
+    --underline-thickness: 1.8px; /* height of underline */
     --underline-rise: 0.28em; /* move line up towards text without changing leading */
     border-bottom: 0 !important;
     background-image: repeating-linear-gradient(
@@ -241,6 +250,47 @@
 
   .vertical-gutters-xl {
     @apply py-16 md:py-24;
+  }
+
+  /* Screen height classes with padding compensation */
+  .min-h-screen-minus-header.vertical-gutters-sm {
+    min-height: calc(100dvh - var(--header-height) - 2rem);
+  }
+  
+  @media (min-width: 768px) {
+    .min-h-screen-minus-header.vertical-gutters-sm {
+      min-height: calc(100dvh - var(--header-height) - 3rem);
+    }
+  }
+
+  .min-h-screen-minus-header.vertical-gutters-md {
+    min-height: calc(100dvh - var(--header-height) - 4rem);
+  }
+  
+  @media (min-width: 768px) {
+    .min-h-screen-minus-header.vertical-gutters-md {
+      min-height: calc(100dvh - var(--header-height) - 6rem);
+    }
+  }
+
+  .min-h-screen-minus-header.vertical-gutters-lg {
+    min-height: calc(100dvh - var(--header-height) - 6rem);
+  }
+  
+  @media (min-width: 768px) {
+    .min-h-screen-minus-header.vertical-gutters-lg {
+      min-height: calc(100dvh - var(--header-height) - 8rem);
+    }
+  }
+
+  .min-h-screen-minus-header.vertical-gutters-xl {
+    min-height: calc(100dvh - var(--header-height) - 8rem);
+  }
+  
+  @media (min-width: 768px) {
+    .min-h-screen-minus-header.vertical-gutters-xl {
+      min-height: calc(100dvh - var(--header-height) - 12rem);
+    }
   }
 
 }

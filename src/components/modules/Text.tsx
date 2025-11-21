@@ -29,7 +29,7 @@ const TextModule = ({ content, contentMaxWidth, alignment = 'left', headingFont 
         block: {
             // Customize heading styles
             h1: ({ children }) => <h1 className={classNames("text-3xl mb-6", fontClass)}>{children}</h1>,
-            h2: ({ children }) => <h2 className={classNames("text-4xl leading-[1.2] text-4xl sm:text-5xl xl:text-6xl mb-6 [&_a]:no-underline [&_a]:relative [&_a]:inline-block [&_a]:after:content-[''] [&_a]:after:absolute [&_a]:after:bottom-0 [&_a]:after:left-0 [&_a]:after:w-full [&_a]:after:h-[2px] [&_a]:after:bg-[length:12px_2px] [&_a]:after:bg-repeat-x [&_a]:after:bg-[linear-gradient(to_right,currentColor_0,currentColor_6px,transparent_6px,transparent_12px)] [&_a:hover]:after:animate-[dash-slide_0.5s_linear_infinite]", fontClass)}>{children}</h2>,
+            h2: ({ children }) => <h2 className={classNames("text-4xl leading-[1.2] text-4xl sm:text-5xl xl:text-6xl mb-6 [&_a]:no-underline [&_a]:relative [&_a]:inline-block [&_a]:after:content-[''] [&_a]:after:absolute [&_a]:after:bottom-0 [&_a]:after:left-0 [&_a]:after:w-full [&_a]:after:h-[2px] [&_a]:after:bg-[length:10px_2px] [&_a]:after:bg-repeat-x [&_a]:after:bg-[linear-gradient(to_right,currentColor_0,currentColor_6px,transparent_6px,transparent_10px)] [&_a:hover]:after:animate-[dash-slide-steps_0.4s_steps(3)_infinite]", fontClass)}>{children}</h2>,
             h3: ({ children }) => <h3 className={classNames("text-3xl mb-5", fontClass)}>{children}</h3>,
             h4: ({ children }) => <h4 className={classNames("text-xl mb-4 mt-8", fontClass)}>{children}</h4>,
             h5: ({ children }) => <h5 className={classNames("text-sm font-medium mb-4 mt-6", fontClass)}>{children}</h5>,
