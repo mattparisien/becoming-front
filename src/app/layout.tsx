@@ -43,7 +43,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${roobert.variable} ${editeur.variable} ${dida.variable}`}
     >
-      <body className='font-sans text-foreground antialiased'>
+      <head>
         {/* Google Analytics */}
         {GA_MEASUREMENT_ID && (
           <>
@@ -61,6 +61,8 @@ export default function RootLayout({
             </Script>
           </>
         )}
+      </head>
+      <body className='font-sans text-foreground antialiased'>
         {children}
       </body>
     </html>
