@@ -11,7 +11,8 @@ interface DemoComponentManagerProps {
 
 const demoComponentRegistry: { [key: string]: React.ComponentType<DemoComponentProps> } = {
     'magnetic-button': dynamic(() => import('@/components/demos/MagneticButton')),
-    'shuffled-text-link': dynamic(() => import('@/components/demos/ShuffledTextLink'))
+    'shuffled-text-link': dynamic(() => import('@/components/demos/ShuffledTextLink')),
+    'mouse-follower': dynamic(() => import('@/components/demos/MouseFollower')),
 };
 
 export default function DemoComponentManager({ title, slug, pluginJSON }: DemoComponentManagerProps) {
@@ -30,7 +31,7 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
     const className = typeof treeConfig === "string" && treeConfig.includes(",.") 
         ? treeConfig.split(",").map(x => x.replace(".", " ")).join(" ") 
         : undefined;
-    const isComponentNeeded = typeof treeConfig !== "object";
+    const isComponentNeeded = true;
 
 
     if (!DemoComponent && isComponentNeeded) return notFound();
