@@ -5,3 +5,9 @@ export const groupBy = <T extends Record<string, unknown>>(array: T[], key: keyo
     acc[group].push(item);
     return acc;
   }, {} as Record<string, T[]>);
+
+
+export const getRandomArrayValue = <T>(array: T[]): T => {
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+}
