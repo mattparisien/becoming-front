@@ -1,5 +1,5 @@
 import localFont from 'next/font/local';
-import Script from 'next/script';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import "./globals.css";
 
 const roobert = localFont({
@@ -36,32 +36,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID;
+  const GA_MEASUREMENT_ID = process.env.NODE_ENV === 'production' ? process.env.GA_MEASUREMENT_ID : 'test';
 
   return (
     <html
       suppressHydrationWarning
       className={`${roobert.variable} ${editeur.variable} ${dida.variable}`}
     >
-      <head>
-        {/* Google Analytics */}
-        {GA_MEASUREMENT_ID && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${GA_MEASUREMENT_ID}');
-              `}
-            </Script>
-          </>
-        )}
-      </head>
+      {GA_MEASUREMENT_ID && <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />}
       <body className='font-sans text-foreground antialiased'>
         {children}
       </body>
