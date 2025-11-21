@@ -16,7 +16,7 @@ const ShuffledTextLink = ({ title, className }: DemoComponentProps) => {
         backgroundColor: color?.value 
     }}>
         
-            <a className={classNames("text-3xl md:text-5xl text-center", className)} href="#">{title}</a>
+            <a className={classNames("text-3xl md:text-5xl text-center text-foreground", className)} href="#">{title}</a>
         
     </div>
 }
