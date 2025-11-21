@@ -8,22 +8,28 @@ import { IoCheckmark } from 'react-icons/io5';
 interface TextModuleProps {
     content: PortableTextBlock[];
     contentMaxWidth?: string;
+    alignment: 'left' | 'center' | 'right';
     headingFont?: 'sans' | 'serif';
 }
 
-const TextModule = ({ content, contentMaxWidth, headingFont = 'sans' }: TextModuleProps) => {
+const TextModule = ({ content, contentMaxWidth, alignment = 'left', headingFont = 'sans' }: TextModuleProps) => {
     if (!content) {
         return null;
     }
 
     const fontClass = headingFont === 'serif' ? 'font-serif font-medium' : 'font-sans';
+    const alignmentClass = {
+        left: 'text-left',
+        center: 'text-center',
+        right: 'text-right',
+    }[alignment];
 
     // Custom components for rendering different block types
     const components: PortableTextComponents = {
         block: {
             // Customize heading styles
             h1: ({ children }) => <h1 className={classNames("text-3xl mb-6", fontClass)}>{children}</h1>,
-            h2: ({ children }) => <h2 className={classNames("text-4xl leading-[1.2] text-4xl sm:text-5xl xl:text-6xl mb-6", fontClass)}>{children}</h2>,
+            h2: ({ children }) => <h2 className={classNames("text-4xl leading-[1.2] text-4xl sm:text-5xl xl:text-6xl mb-6 [&_a]:no-underline [&_a]:relative [&_a]:inline-block [&_a]:after:content-[''] [&_a]:after:absolute [&_a]:after:bottom-0 [&_a]:after:left-0 [&_a]:after:w-full [&_a]:after:h-[2px] [&_a]:after:bg-[length:12px_2px] [&_a]:after:bg-repeat-x [&_a]:after:bg-[linear-gradient(to_right,currentColor_0,currentColor_6px,transparent_6px,transparent_12px)] [&_a:hover]:after:animate-[dash-slide_0.5s_linear_infinite]", fontClass)}>{children}</h2>,
             h3: ({ children }) => <h3 className={classNames("text-3xl mb-5", fontClass)}>{children}</h3>,
             h4: ({ children }) => <h4 className={classNames("text-xl mb-4 mt-8", fontClass)}>{children}</h4>,
             h5: ({ children }) => <h5 className={classNames("text-sm font-medium mb-4 mt-6", fontClass)}>{children}</h5>,
@@ -74,6 +80,19 @@ const TextModule = ({ content, contentMaxWidth, headingFont = 'sans' }: TextModu
                     >
                         {children}
                     </TransitionLink>
+                );
+            },
+            // Handle email links from Sanity
+            linkEmail: ({ children, value }) => {
+                const email = value?.email || '';
+                
+                return (
+                    <a
+                        href={`mailto:${email}`}
+                        className="underline"
+                    >
+                        {children}
+                    </a>
                 );
             },
             // Handle external links from Sanity
@@ -144,7 +163,7 @@ const TextModule = ({ content, contentMaxWidth, headingFont = 'sans' }: TextModu
     }
 
     return (
-        <div className={classNames("text-foreground prose prose-lg font-light mx-auto [&>:first-child]:mt-0 [&>:last-child]:mb-0 [&_li_p]:mb-0", {
+        <div className={classNames("text-foreground prose prose-lg font-light mx-auto [&>:first-child]:mt-0 [&>:last-child]:mb-0 [&_li_p]:mb-0", alignmentClass, {
             [maxWidthClassMap[contentMaxWidth as keyof typeof maxWidthClassMap]]: contentMaxWidth,
             'max-w-none': !contentMaxWidth,
         })}>

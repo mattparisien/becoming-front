@@ -108,6 +108,15 @@
     }
   }
 
+  @keyframes dash-slide {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 12px 0;
+    }
+  }
+
   .animate-fade-in-up {
     animation: fadeInUp 0.8s var(--ease-power2-out) forwards;
     /* Ensure final state is maintained after animation */
@@ -216,6 +225,22 @@
 
   .vertical-gutters {
     @apply pt-6 md:pt-8;
+  }
+
+  .vertical-gutters-sm {
+    @apply py-4 md:py-6;
+  }
+
+  .vertical-gutters-md {
+    @apply py-8 md:py-12;
+  }
+
+  .vertical-gutters-lg {
+    @apply py-12 md:py-16;
+  }
+
+  .vertical-gutters-xl {
+    @apply py-16 md:py-24;
   }
 
 }

@@ -20,24 +20,46 @@ interface PageComponentProps {
 
 export default function PageComponent({ page }: PageComponentProps) {
 
+    console.log('page', page)
+
     const modules = page?.modules || [];
 
     if (!page || modules.length === 0) return notFound();
 
+    const getPaddingClass = (paddingY?: string) => {
+        const paddingValue = paddingY || 'sm';
+        
+        if (paddingValue === 'none') return '';
+        
+        return `vertical-gutters-${paddingValue}`;
+    };
+
+    const getHeightClass = (height?: string) => {
+        if (height === 'screen') return 'h-screen-minus-header';
+        return '';
+    };
+
     return (
-        <section className="vertical-gutters flex items-center justify-center">
-            <Container className="w-full">
-                {modules.map((module: SanityModule, index: number) => {
-                    const ModuleComponent = moduleComponents[module._type];
+        <>
+            {modules.map((module: SanityModule, index: number) => {
+                const ModuleComponent = moduleComponents[module._type];
 
-                    if (!ModuleComponent) {
-                        console.warn(`No component found for module type: ${module._type}`);
-                        return null;
-                    }
+                if (!ModuleComponent) {
+                    console.warn(`No component found for module type: ${module._type}`);
+                    return null;
+                }
 
-                    return <ModuleComponent key={module._key || index} {...module} />;
-                })}
-            </Container>
-        </section>
+                const paddingClass = getPaddingClass(module.paddingY as string | undefined);
+                const heightClass = getHeightClass(module.height as string | undefined);
+
+                return (
+                    <section key={module._key || index} className={`${paddingClass} ${heightClass} flex items-center justify-center`}>
+                        <Container className="w-full">
+                            <ModuleComponent {...module} />
+                        </Container>
+                    </section>
+                );
+            })}
+        </>
     );
 }
