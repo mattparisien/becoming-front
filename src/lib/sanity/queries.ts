@@ -54,13 +54,70 @@ export const GLOBAL_DATA_QUERY = `{
       ),
       "image": coalesce(
         localizedSeo[language == $locale][0].seo.image.asset->{
-          ...
+          url,
+          "alt": alt
         },
         seo.image.asset->{
           url,
-          alt
+          "alt": alt
+        },
+        socialImage.asset->{
+          url,
+          "alt": "Social sharing image"
         }
-      )
+      ),
+      "ogImage": coalesce(
+        localizedSeo[language == $locale][0].seo.ogImage.asset->{
+          url,
+          "alt": alt
+        },
+        seo.ogImage.asset->{
+          url,
+          "alt": alt
+        },
+        localizedSeo[language == $locale][0].seo.image.asset->{
+          url,
+          "alt": alt
+        },
+        seo.image.asset->{
+          url,
+          "alt": alt
+        },
+        socialImage.asset->{
+          url,
+          "alt": "Social sharing image"
+        }
+      ),
+      "twitterImage": coalesce(
+        localizedSeo[language == $locale][0].seo.twitterImage.asset->{
+          url,
+          "alt": alt
+        },
+        seo.twitterImage.asset->{
+          url,
+          "alt": alt
+        },
+        localizedSeo[language == $locale][0].seo.image.asset->{
+          url,
+          "alt": alt
+        },
+        seo.image.asset->{
+          url,
+          "alt": alt
+        },
+        socialImage.asset->{
+          url,
+          "alt": "Social sharing image"
+        }
+      ),
+      "favicons": favicons{
+        "favicon16": favicon16.asset->url,
+        "favicon32": favicon32.asset->url,
+        "favicon96": favicon96.asset->url,
+        "favicon180": favicon180.asset->url,
+        "favicon192": favicon192.asset->url,
+        "favicon512": favicon512.asset->url
+      }
     }
   }.seo,
   "menu": *[_type == "settings"][0]{
@@ -156,8 +213,7 @@ export const GLOBAL_DATA_QUERY = `{
       localizedBrandDescriptions[language == "en"][0].description
     ),
     logo,
-    logoAlt,
-    favicon
+    logoAlt
   },
   "contactEmail": *[_type == "settings"][0].contactEmail,
   "socialLinks": *[_type == "settings"][0].socialLinks[],

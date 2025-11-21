@@ -50,10 +50,26 @@ interface GlobalDataQueryResult {
   seo: {
     title: string;
     description: string;
-    image: {
+    image?: {
       url: string;
       alt: string;
-    }
+    };
+    ogImage?: {
+      url: string;
+      alt: string;
+    };
+    twitterImage?: {
+      url: string;
+      alt: string;
+    };
+    favicons: {
+      favicon16: string | null;
+      favicon32: string | null;
+      favicon96: string | null;
+      favicon180: string | null;
+      favicon192: string | null;
+      favicon512: string | null;
+    };
   },
   languages: {
     label: string;
@@ -69,10 +85,6 @@ interface GlobalDataQueryResult {
       alt: string;
     } | null;
     logoAlt: string;
-    favicon: {
-      url: string;
-      alt: string;
-    } | null;
   };
   socialLinks: Settings['socialLinks'];
 
@@ -120,12 +132,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: globalData.seo.description || globalData.seo.title,
     metadataBase: new URL(process.env.SITE_URL || 'http://localhost:3000'),
     icons: {
-      icon: globalData.seo.image?.url,
+      icon: [
+        ...(globalData.seo?.favicons?.favicon16 ? [{ url: globalData.seo.favicons.favicon16, sizes: '16x16', type: 'image/png' }] : []),
+        ...(globalData.seo?.favicons?.favicon32 ? [{ url: globalData.seo.favicons.favicon32, sizes: '32x32', type: 'image/png' }] : []),
+        ...(globalData.seo?.favicons?.favicon96 ? [{ url: globalData.seo.favicons.favicon96, sizes: '96x96', type: 'image/png' }] : []),
+        ...(globalData.seo?.favicons?.favicon192 ? [{ url: globalData.seo.favicons.favicon192, sizes: '192x192', type: 'image/png' }] : []),
+        ...(globalData.seo?.favicons?.favicon512 ? [{ url: globalData.seo.favicons.favicon512, sizes: '512x512', type: 'image/png' }] : []),
+      ],
+      apple: globalData.seo?.favicons?.favicon180 ? [{ url: globalData.seo.favicons.favicon180, sizes: '180x180', type: 'image/png' }] : undefined,
     },
     openGraph: {
       title: globalData.seo.title,
       description: globalData.seo.description || globalData.seo.title,
-      images: globalData.seo.image ? [globalData.seo.image] : [],
+      images: globalData.seo.ogImage ? [globalData.seo.ogImage] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: globalData.seo.title,
+      description: globalData.seo.description || globalData.seo.title,
+      images: globalData.seo.twitterImage ? [globalData.seo.twitterImage.url] : [],
     },
 
   };
@@ -176,7 +201,7 @@ export default async function LocaleLayout({
   const menuLinks = globalData?.menu?.navigation.items || [];
   const menuPalette = globalData?.menu?.theme?.palette || null;
   const footer = globalData?.footer || { _type: 'footerSettings' as const, navigations: [] };
-  const brand = globalData?.brand || { title: "Title", companyName: 'Company Name', tagline: '', description: '', logo: null, logoAlt: '', favicon: null };
+  const brand = globalData?.brand || { title: "Title", companyName: 'Company Name', tagline: '', description: '', logo: null, logoAlt: '' };
   const contactEmail = globalData?.contactEmail || '';
   const markets = globalData?.markets || [];
 

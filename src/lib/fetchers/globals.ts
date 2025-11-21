@@ -13,8 +13,18 @@ export const getGlobalData = async (locale: string) => {
     const sanityData = await fetchSanityData<{ 
         seo: { 
             title: string; 
-            description?: string; 
-            image?: { url: string; alt?: string } 
+            description?: string;
+            image?: { url: string; alt?: string };
+            ogImage?: { url: string; alt?: string };
+            twitterImage?: { url: string; alt?: string };
+            favicons: {
+                favicon16: string | null;
+                favicon32: string | null;
+                favicon96: string | null;
+                favicon180: string | null;
+                favicon192: string | null;
+                favicon512: string | null;
+            };
         }; 
         theme?: unknown 
     }>(
