@@ -171,13 +171,13 @@ export const productPageTranslations: Record<Locale, ProductPageTranslations> = 
 export const footerTranslations: Record<Locale, FooterTranslations> = {
   "en": {
     followUs: 'Follow Us',
-    madeIn: 'Made with ♥ in Montréal',
+    madeIn: 'Made with ♥ in Montreal, Tiohtià:ke',
     contactUs: 'Get in Touch',
     allRightsReserved: 'All rights reserved.',
   },
   "fr": {
     followUs: 'Suivez-nous',
-    madeIn: 'Construit avec ♥ à Montréal',
+    madeIn: 'Construit avec ♥ à Montréal, Tiohtià:ke',
     contactUs: 'Contactez-nous',
     allRightsReserved: 'Tous droits réservés.',
   },

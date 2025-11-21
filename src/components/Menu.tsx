@@ -84,7 +84,7 @@ export default function Menu({ items, countryCode, onOpenLocationModal }: MenuPr
                             <span className="ml-2 leading-none">{countryCode}</span>
                         </span>
                     </button>
-                    <div className="text-base sm:text-xl">{t.madeIn}</div>
+                    <div className="text-base sm:text-xl leading-none">{t.madeIn}</div>
                 </Container>
             </div>
         </div>
