@@ -21,6 +21,10 @@ export const SUPPORTED_LANGUAGES: SupportedLanguage[] = [
 // Hardcoded fallback locale to avoid async calls at module level
 const defaultLocale: Locale = 'en';
 
+export interface MenuTranslations {
+  madeIn: string;
+}
+
 export interface CartDrawerTranslations {
   cart: string;
   closeCart: string;
@@ -83,6 +87,15 @@ export interface LocationModalTranslations {
   cancel: string;
   notSelected: string;
 }
+
+export const MenuTranslations : Record<Locale, MenuTranslations> = {
+  "en": {
+    madeIn: 'Made with ♡ in Montreal, Tiohtià:ke',
+  },
+  "fr": {
+    madeIn: 'Construit avec ♡ à Montréal, Tiohtià:ke',
+  },
+};
 
 export const cartDrawerTranslations: Record<Locale, CartDrawerTranslations> = {
   "en": {
@@ -216,6 +229,9 @@ export const locationModalTranslations: Record<Locale, LocationModalTranslations
   },
 };
 
+export function getMenuTranslations(locale: Locale): MenuTranslations {
+  return MenuTranslations[locale] || MenuTranslations[defaultLocale];
+}
 
 export function getCartDrawerTranslations(locale: Locale): CartDrawerTranslations {
   return cartDrawerTranslations[locale] || cartDrawerTranslations[defaultLocale];

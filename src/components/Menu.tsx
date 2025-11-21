@@ -9,6 +9,7 @@ import Container from "./Container";
 import { CiGlobe } from "react-icons/ci";
 import TransitionLayer from "./TransitionLayer";
 import TransitionLink from "./TransitionLink";
+import { getMenuTranslations } from "@/lib/i18n/translations";
 
 
 interface MenuItem {
@@ -30,7 +31,7 @@ export default function Menu({ items, countryCode, onOpenLocationModal }: MenuPr
     const params = useParams();
     const pathname = params.slug;
     const containerRef = useRef<HTMLDivElement>(null);
-
+    const t = getMenuTranslations ((params?.lang as string) || 'en');
 
     if (isIntroActive) return null;
 
@@ -83,7 +84,7 @@ export default function Menu({ items, countryCode, onOpenLocationModal }: MenuPr
                             <span className="ml-2 leading-none">{countryCode}</span>
                         </span>
                     </button>
-                    <div>Montr&eacute;al, Canada</div>
+                    <div className="text-base sm:text-xl">{t.madeIn}</div>
                 </Container>
             </div>
         </div>
