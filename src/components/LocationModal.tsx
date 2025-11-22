@@ -1,11 +1,11 @@
 'use client'
 import { useLocationModal } from "@/context/LocationModalContext";
 import { Location } from "@/lib/types/misc";
-import { Dialog } from "@headlessui/react";
 import { useState } from "react";
 import { LOCATION_PREFERENCES_COOKIE_KEY } from "@/lib/constants";
 import { useParams, usePathname } from "next/navigation";
 import Button from "@/components/ui/Button";
+import Modal from "@/components/ui/Modal";
 import { getLocationModalTranslations } from "@/lib/i18n/translations";
 import { Locale } from "@/lib/i18n/config";
 
@@ -70,65 +70,47 @@ const LocationModal: React.FC<LocationModalProps> = ({ markets, initialMarketVal
   };
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} className="font-sans fixed inset-0 z-[999] flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
-      <div className="relative bg-background p-6 rounded-lg shadow-lg w-full max-w-sm mx-auto z-10">
-        {/* Close button */}
-        <button
-          onClick={handleClose}
-          className="absolute top-4 right-4 text-foreground/60 hover:text-foreground transition-colors cursor-pointer"
-          aria-label="Close modal"
+    <Modal 
+      isOpen={isOpen} 
+      onClose={handleClose}
+      title={t.title}
+      description={
+        <>
+          <p className="mb-4 font-semibold">
+            <span className="font-semibold">{t.currentLocation}</span>{' '}
+            {initialMarketValue ? `${initialMarketValue.country.name} (${initialMarketValue.locale})` : t.notSelected}.
+          </p>
+          <p>
+            {t.description}
+          </p>
+        </>
+      }
+    >
+      <select
+        className="w-full p-2 border border-foreground/20 text-foreground rounded mb-4"
+        value={selectedMarket?.country.code + '/' + selectedMarket?.locale}
+        onChange={handleChange}
+      >
+        <option value="" disabled>{t.select}</option>
+        {markets.map((market: Location) => (
+          market.locales.map(locale => (
+            <option key={market.country.code + '/' + locale} value={market.country.code + '/' + locale}>
+              {market.country.name} ({locale}) \ {market.currencyCode}
+            </option>
+          ))
+
+        ))}
+      </select>
+      <div className="flex justify-start gap-4 mt-8">
+        <Button
+          variant="primary"
+          onClick={handleConfirm}
+          disabled={!selectedMarket}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-
-        <Dialog.Title className="text-lg text-foreground font-semibold mb-4">{t.title}</Dialog.Title>
-        <Dialog.Description className="mb-4 text-sm text-foreground/70 font-semibold">
-          {t.currentLocation} {initialMarketValue ? `${initialMarketValue.country.name} (${initialMarketValue.locale})` : t.notSelected}.
-        </Dialog.Description>
-        <Dialog.Description className="mb-4 text-sm text-foreground/70">
-          {t.description}
-        </Dialog.Description>
-        <select
-          className="w-full p-2 border border-foreground/20 text-foreground rounded mb-4"
-          value={selectedMarket?.country.code + '/' + selectedMarket?.locale}
-          onChange={handleChange}
-        >
-          <option value="" disabled>{t.select}</option>
-          {markets.map((market: Location) => (
-            market.locales.map(locale => (
-              <option key={market.country.code + '/' + locale} value={market.country.code + '/' + locale}>
-                {market.country.name} ({locale}) \ {market.currencyCode}
-              </option>
-            ))
-
-          ))}
-        </select>
-        <div className="flex justify-start gap-4 mt-8">
-
-          <Button
-            variant="primary"
-            onClick={handleConfirm}
-            disabled={!selectedMarket}
-          >
-            {t.confirm}
-          </Button>
-        </div>
+          {t.confirm}
+        </Button>
       </div>
-    </Dialog>
+    </Modal>
   );
 };
 
