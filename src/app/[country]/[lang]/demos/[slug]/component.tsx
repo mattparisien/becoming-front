@@ -29,7 +29,7 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
                (!supportedPlatforms.includes("tablet") && isTablet());
     }, [pluginJSON]);
 
-    const [showMobileWarning, setShowMobileWarning] = useState<boolean>(true);
+    const [showMobileWarning, setShowMobileWarning] = useState<boolean>(shouldShowWarning);
 
     if (!pluginJSON) return notFound();
 
