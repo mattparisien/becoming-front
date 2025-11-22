@@ -14,7 +14,7 @@ const MobileWarningModal = ({ isOpen, onClose }: MobileWarningModalProps) => {
       isOpen={isOpen}
       onClose={onClose}
       title="Mobile/Tablet Notice"
-      description="This plugin demo may not work properly on mobile or tablet devices. For the best experience, please view this demo on a desktop computer."
+      description="Due to the nature of this plugin, it is only compatible with desktop devices. For the best experience, please view this demo on a desktop computer."
       maxWidth="md"
     >
       <div className="flex justify-end mt-6">
