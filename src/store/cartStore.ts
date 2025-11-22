@@ -14,7 +14,7 @@ interface CartState {
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
-  checkout: () => Promise<void>;
+  checkout: (metadata?: { internalUrl: string; agreedToPrivacy: boolean }) => Promise<void>;
 }
 
 // Custom cookie storage
@@ -88,7 +88,7 @@ export const useCartStore = create<CartState>()(
         const state = get();
         return state.items.reduce((total, item) => total + item.price * item.quantity, 0);
       },
-      checkout: async () => {
+      checkout: async (metadata) => {
         const items = get().items;
 
         if (!items.length) {
@@ -106,7 +106,10 @@ export const useCartStore = create<CartState>()(
           const response = await fetch('/api/shopify/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ lineItems }),
+            body: JSON.stringify({ 
+              lineItems,
+              metadata: metadata || {},
+            }),
           });
 
           const data = await response.json();
