@@ -62,7 +62,7 @@ const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, cont
               <div className="text-4xl sm:text-5xl lg:text-6xl text-background mb-4 leading-[0.9] font-logo">
                 {brandName}
               </div>
-              <p className="text-background/70 text-md lg:text-xl font-sans max-w-md leading-relaxed">
+              <p className="text-background text-md lg:text-xl font-sans max-w-md leading-relaxed">
                 {tagLine}
               </p>
             </div>
