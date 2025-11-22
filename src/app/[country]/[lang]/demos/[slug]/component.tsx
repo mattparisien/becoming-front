@@ -29,13 +29,11 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
                (!supportedPlatforms.includes("tablet") && isTablet());
     }, [pluginJSON]);
 
-    const [showMobileWarning, setShowMobileWarning] = useState<boolean>(shouldShowWarning);
+    const [showMobileWarning, setShowMobileWarning] = useState<boolean>(true);
 
     if (!pluginJSON) return notFound();
 
     const { treeConfig } = JSON.parse(pluginJSON);
-
-
 
 
     const DemoComponent = demoComponentRegistry[slug];
