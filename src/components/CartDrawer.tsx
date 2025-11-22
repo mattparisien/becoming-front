@@ -33,6 +33,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [privacyError, setPrivacyError] = useState('');
   const [showUrlHelp, setShowUrlHelp] = useState(false);
+  const [showCheckoutDisabled, setShowCheckoutDisabled] = useState(false);
 
   // Reset to cart view when drawer closes
   useEffect(() => {
@@ -359,9 +360,24 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                   {t.checkout}
                 </Button>
               ) : (
-                <Button size="lg" fullWidth onClick={handleContinueToCheckout} disabled={isCheckingOut}>
-                  {isCheckingOut ? t.processing : t.continueToCheckout}
-                </Button>
+                <div className="relative">
+                  <Button 
+                    size="lg" 
+                    fullWidth 
+                    disabled={true}
+                    onMouseEnter={() => setShowCheckoutDisabled(true)}
+                    onMouseLeave={() => setShowCheckoutDisabled(false)}
+                    onClick={() => setShowCheckoutDisabled(!showCheckoutDisabled)}
+                  >
+                    {t.continueToCheckout}
+                  </Button>
+                  {showCheckoutDisabled && (
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-foreground text-background rounded-lg shadow-lg z-10 text-xs leading-relaxed text-center">
+                      {t.checkoutDisabledMessage}
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground rotate-45"></div>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           )}
