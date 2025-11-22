@@ -38,6 +38,17 @@ export interface CartDrawerTranslations {
   decreaseQuantity: string;
   increaseQuantity: string;
   noImage: string;
+  back: string;
+  checkoutDetails: string;
+  internalUrlLabel: string;
+  internalUrlPlaceholder: string;
+  internalUrlHelp: string;
+  internalUrlTooltip: string;
+  continueToCheckout: string;
+  internalUrlRequired: string;
+  privacyPolicyAgree: string;
+  privacyPolicy: string;
+  privacyPolicyRequired: string;
 }
 
 export interface HeaderTranslations {
@@ -111,6 +122,17 @@ export const cartDrawerTranslations: Record<Locale, CartDrawerTranslations> = {
     decreaseQuantity: 'Decrease quantity',
     increaseQuantity: 'Increase quantity',
     noImage: 'No image',
+    back: 'Back',
+    checkoutDetails: 'Checkout Details',
+    internalUrlLabel: 'Squarespace Internal URL',
+    internalUrlPlaceholder: 'Enter your Squarespace site URL',
+    internalUrlHelp: 'This is the internal URL where the plugin will be installed',
+    internalUrlTooltip: 'This is the backend URL of your Squarespace website (e.g., https://your-site.squarespace.com). You can find this in your Squarespace dashboard under Settings → Domains. This is different from your public domain name.',
+    continueToCheckout: 'Continue to Checkout',
+    internalUrlRequired: 'Internal URL is required',
+    privacyPolicyAgree: 'By checking this box you agree to our',
+    privacyPolicy: 'Privacy Policy',
+    privacyPolicyRequired: 'You must agree to the privacy policy',
   },
   "fr": {
     cart: 'Panier',
@@ -125,6 +147,17 @@ export const cartDrawerTranslations: Record<Locale, CartDrawerTranslations> = {
     decreaseQuantity: 'Diminuer la quantité',
     increaseQuantity: 'Augmenter la quantité',
     noImage: 'Pas d\'image',
+    back: 'Retour',
+    checkoutDetails: 'Détails de la commande',
+    internalUrlLabel: 'URL interne Squarespace',
+    internalUrlPlaceholder: 'Entrez l\'URL de votre site Squarespace',
+    internalUrlHelp: 'Il s\'agit de l\'URL interne où le plugin sera installé',
+    internalUrlTooltip: 'Il s\'agit de l\'URL backend de votre site Web Squarespace (par exemple, https://votre-site.squarespace.com). Vous pouvez la trouver dans votre tableau de bord Squarespace sous Paramètres → Domaines. Elle est différente de votre nom de domaine public.',
+    continueToCheckout: 'Continuer vers la commande',
+    internalUrlRequired: 'L\'URL interne est requise',
+    privacyPolicyAgree: 'En cochant cette case, vous acceptez notre',
+    privacyPolicy: 'Politique de confidentialité',
+    privacyPolicyRequired: 'Vous devez accepter la politique de confidentialité',
   },
 };
 

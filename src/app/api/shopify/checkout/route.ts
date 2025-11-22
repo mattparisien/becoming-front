@@ -31,7 +31,7 @@ interface CartCreateResponse {
 
 export async function POST(req: Request) {
   try {
-    const { lineItems } = await req.json();
+    const { lineItems, metadata } = await req.json();
 
     // Use the newer Cart API instead of deprecated Checkout API
     const mutation = `
@@ -57,13 +57,38 @@ export async function POST(req: Request) {
       }
     `;
 
+    // Prepare custom attributes for Shopify
+    const attributes: { key: string; value: string }[] = [];
+    
+    if (metadata?.internalUrl) {
+      attributes.push({
+        key: 'Squarespace Internal URL',
+        value: metadata.internalUrl,
+      });
+    }
+    
+    if (metadata?.agreedToPrivacy) {
+      attributes.push({
+        key: 'Privacy Policy Agreed',
+        value: new Date().toISOString(),
+      });
+    }
+
     // Transform line items to cart lines format
-    const cartInput = {
+    const cartInput: {
+      lines: { merchandiseId: string; quantity: number }[];
+      attributes?: { key: string; value: string }[];
+    } = {
       lines: lineItems.map((item: { variantId: string; quantity: number }) => ({
         merchandiseId: item.variantId,
         quantity: item.quantity,
       })),
     };
+
+    // Add attributes if we have any
+    if (attributes.length > 0) {
+      cartInput.attributes = attributes;
+    }
 
     const data = await shopifyFetch<CartCreateResponse>(mutation, { input: cartInput });
     const { cart, userErrors } = data.cartCreate;
