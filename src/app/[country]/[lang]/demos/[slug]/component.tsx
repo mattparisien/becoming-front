@@ -36,8 +36,6 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
     const { treeConfig } = JSON.parse(pluginJSON);
 
 
-
-
     const DemoComponent = demoComponentRegistry[slug];
 
 
