@@ -49,6 +49,7 @@ export interface CartDrawerTranslations {
   privacyPolicyAgree: string;
   privacyPolicy: string;
   privacyPolicyRequired: string;
+  checkoutDisabledMessage: string;
 }
 
 export interface HeaderTranslations {
@@ -133,6 +134,7 @@ export const cartDrawerTranslations: Record<Locale, CartDrawerTranslations> = {
     privacyPolicyAgree: 'By checking this box you agree to our',
     privacyPolicy: 'Privacy Policy',
     privacyPolicyRequired: 'You must agree to the privacy policy',
+    checkoutDisabledMessage: 'Checkout will be enabled soon. We are currently setting up payment processing.',
   },
   "fr": {
     cart: 'Panier',
@@ -158,6 +160,7 @@ export const cartDrawerTranslations: Record<Locale, CartDrawerTranslations> = {
     privacyPolicyAgree: 'En cochant cette case, vous acceptez notre',
     privacyPolicy: 'Politique de confidentialité',
     privacyPolicyRequired: 'Vous devez accepter la politique de confidentialité',
+    checkoutDisabledMessage: 'Le paiement sera bientôt activé. Nous configurons actuellement le traitement des paiements.',
   },
 };
 
