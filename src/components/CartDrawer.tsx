@@ -40,10 +40,10 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
     
     const trimmedUrl = url.trim();
     
-    // Check if it ends with .squarespace.com
+    // Check if it ends with .squarespace.com (with optional trailing slash)
     if (trimmedUrl.includes('.squarespace.com')) {
       // Extract the domain part (without protocol if present)
-      const domainPart = trimmedUrl.replace(/^https?:\/\//, '');
+      const domainPart = trimmedUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
       return domainPart.endsWith('.squarespace.com') || domainPart === 'squarespace.com';
     }
     
