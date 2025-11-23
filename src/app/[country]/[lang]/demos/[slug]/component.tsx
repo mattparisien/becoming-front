@@ -45,8 +45,7 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
 
 
     if (!DemoComponent && isComponentNeeded) return notFound();
-    console.log(`${process.env.NEXT_PUBLIC_PLUGIN_BUNDLE_URL}/${slug}/bundle.js`)
-    console.log('bindle url', `${process.env.NEXT_PUBLIC_PLUGIN_BUNDLE_URL}/${slug}/bundle.js`)
+
     return (
         <section className="flex items-center justify-center">
             {/* Mobile/Tablet Warning Popup */}
@@ -71,8 +70,8 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
                     `
                 }}
             />
-            <script src={`${process.env.PLUGIN_BUNDLE_URL}/${slug}/bundle.js`} defer></script>
-            <link rel="stylesheet" href={`${process.env.PLUGIN_BUNDLE_URL}/${slug}/assets/styles/main.css`} />
+            <script src={`${process.env.NEXT_PUBLIC_PLUGIN_BUNDLE_URL}/${slug}/bundle.js`} defer></script>
+            <link rel="stylesheet" href={`${process.env.NEXT_PUBLIC_PLUGIN_BUNDLE_URL}/${slug}/assets/styles/main.css`} />
             <Container className="w-full py-5">
                 <div className="w-full h-[calc(var(--screen-minus-header-height)-theme(space.20))] rounded-xl overflow-hidden">
                     {isComponentNeeded && <DemoComponent className={className} title={title} />}
