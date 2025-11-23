@@ -35,9 +35,6 @@ export default function Menu({ items, countryCode, onOpenLocationModal }: MenuPr
 
     if (isIntroActive) return null;
 
-
-
-
     return (
         <div
             ref={containerRef}
