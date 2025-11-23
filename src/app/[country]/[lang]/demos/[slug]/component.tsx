@@ -35,9 +35,6 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
 
     const { treeConfig } = JSON.parse(pluginJSON);
 
-    console.log('THE JSON', pluginJSON);
-    console.log('css', `${process.env.PLUGIN_BUNDLE_URL}/${slug}/assets/styles/main.css`)
-
     const DemoComponent = demoComponentRegistry[slug];
 
 
@@ -48,8 +45,8 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
 
 
     if (!DemoComponent && isComponentNeeded) return notFound();
-
-
+    console.log(`${process.env.PLUGIN_BUNDLE_URL}/${slug}/bundle.js`)
+    console.log('bindle url', `${process.env.PLUGIN_BUNDLE_URL}/${slug}/bundle.js`)
     return (
         <section className="flex items-center justify-center">
             {/* Mobile/Tablet Warning Popup */}
