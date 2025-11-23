@@ -346,7 +346,9 @@ export const INSTALLATION_GUIDE_QUERY = `*[_type == "installationGuide" && slug.
       "url": previewImageUrl
     },
   content,
-  "slug": product->store.slug.current
+  "slug": {
+    "current": product->store.slug.current
+  }
 }`
 
 export const INSTALLATION_GUIDES_QUERY = `*[_type == "installationGuide" && isActive == true && language == $language]{

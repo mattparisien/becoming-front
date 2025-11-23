@@ -30,10 +30,31 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const [currentView, setCurrentView] = useState<DrawerView>('cart');
   const [internalUrl, setInternalUrl] = useState('');
   const [urlError, setUrlError] = useState('');
-  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
-  const [privacyError, setPrivacyError] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [termsError, setTermsError] = useState('');
   const [showUrlHelp, setShowUrlHelp] = useState(false);
-console.log(items)
+
+  // Validate URL format
+  const isValidSquarespaceUrl = (url: string): boolean => {
+    if (!url.trim()) return false;
+    
+    const trimmedUrl = url.trim();
+    
+    // Check if it ends with .squarespace.com
+    if (trimmedUrl.includes('.squarespace.com')) {
+      // Extract the domain part (without protocol if present)
+      const domainPart = trimmedUrl.replace(/^https?:\/\//, '');
+      return domainPart.endsWith('.squarespace.com') || domainPart === 'squarespace.com';
+    }
+    
+    return false;
+  };
+
+  // Check if form is valid for submission
+  const isFormValid = internalUrl.trim() !== '' && 
+                      isValidSquarespaceUrl(internalUrl) && 
+                      agreedToTerms;
+
   // Reset to cart view when drawer closes
   useEffect(() => {
     if (!isOpen) {
@@ -41,8 +62,8 @@ console.log(items)
         setCurrentView('cart');
         setInternalUrl('');
         setUrlError('');
-        setAgreedToPrivacy(false);
-        setPrivacyError('');
+        setAgreedToTerms(false);
+        setTermsError('');
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -67,7 +88,7 @@ console.log(items)
     try {
       await checkout({
         internalUrl,
-        agreedToPrivacy,
+        agreedToPrivacy: agreedToTerms,
       });
     } catch (error) {
       console.error('Checkout error:', error);
@@ -83,7 +104,7 @@ console.log(items)
   const handleBackToCart = () => {
     setCurrentView('cart');
     setUrlError('');
-    setPrivacyError('');
+    setTermsError('');
   };
 
   const handleContinueToCheckout = async () => {
@@ -92,17 +113,20 @@ console.log(items)
     if (!internalUrl.trim()) {
       setUrlError(t.internalUrlRequired);
       hasError = true;
+    } else if (!isValidSquarespaceUrl(internalUrl)) {
+      setUrlError('Please enter a valid Squarespace URL (e.g., https://your-site.squarespace.com)');
+      hasError = true;
     }
 
-    if (!agreedToPrivacy) {
-      setPrivacyError(t.privacyPolicyRequired);
+    if (!agreedToTerms) {
+      setTermsError(t.confirmationRequired);
       hasError = true;
     }
 
     if (hasError) return;
 
     setUrlError('');
-    setPrivacyError('');
+    setTermsError('');
     
     setIsCheckingOut(true);
 
@@ -141,8 +165,8 @@ console.log(items)
       setCurrentView('cart');
       setInternalUrl('');
       setUrlError('');
-      setAgreedToPrivacy(false);
-      setPrivacyError('');
+      setAgreedToTerms(false);
+      setTermsError('');
     }, 300);
   };
 
@@ -336,39 +360,52 @@ console.log(items)
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <input
-                      type="checkbox"
-                      id="privacyPolicy"
-                      checked={agreedToPrivacy}
-                      onChange={(e) => {
-                        setAgreedToPrivacy(e.target.checked);
-                        setPrivacyError('');
-                      }}
-                      className={classNames(
-                        "mt-0.5 w-3.5 h-3.5 rounded border cursor-pointer transition-colors",
-                        {
-                          'border-red-500': privacyError,
-                          'border-foreground/30 accent-foreground': !privacyError,
-                        }
-                      )}
-                    />
-                    <label htmlFor="privacyPolicy" className="text-xs text-foreground cursor-pointer">
-                      {t.privacyPolicyAgree}{' '}
-                      <a 
-                        href="/privacy-policy" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="underline hover:opacity-70 transition-opacity"
-                      >
-                        {t.privacyPolicy}
-                      </a>
-                    </label>
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-foreground">{t.confirmationHeading}</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        id="termsConfirmation"
+                        checked={agreedToTerms}
+                        onChange={(e) => {
+                          setAgreedToTerms(e.target.checked);
+                          setTermsError('');
+                        }}
+                        className={classNames(
+                          "mt-0.5 w-3.5 h-3.5 rounded border cursor-pointer transition-colors flex-shrink-0",
+                          {
+                            'border-red-500': termsError,
+                            'border-foreground/30 accent-foreground': !termsError,
+                          }
+                        )}
+                      />
+                      <label htmlFor="termsConfirmation" className="text-xs text-foreground cursor-pointer leading-relaxed">
+                        {t.confirmationAgree}{' '}
+                        <a 
+                          href="/privacy-policy" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="underline hover:opacity-70 transition-opacity"
+                        >
+                          {t.privacyPolicy}
+                        </a>
+                        {' '}and{' '}
+                        <a 
+                          href="/terms-of-service" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="underline hover:opacity-70 transition-opacity"
+                        >
+                          {t.termsOfService}
+                        </a>
+                        {t.confirmationText}
+                      </label>
+                    </div>
+                    {termsError && (
+                      <p className="text-red-500 text-xs mt-1">{termsError}</p>
+                    )}
                   </div>
-                  {privacyError && (
-                    <p className="text-red-500 text-xs mt-1">{privacyError}</p>
-                  )}
                 </div>
               </div>
             )}
@@ -391,7 +428,7 @@ console.log(items)
                 <Button 
                   size="lg" 
                   fullWidth 
-                  disabled={isCheckingOut}
+                  disabled={!isFormValid || isCheckingOut}
                   onClick={handleContinueToCheckout}
                 >
                   {isCheckingOut ? t.processing : t.continueToCheckout}

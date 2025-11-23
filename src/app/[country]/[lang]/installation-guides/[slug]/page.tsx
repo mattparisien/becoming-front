@@ -47,8 +47,8 @@ export default async function InstallationGuidePage({ params }: Props) {
         slug
     });
 
+
     if (!installationGuide) {
-        console.log('not found in installation guide page called!')
         notFound();
     }
 
