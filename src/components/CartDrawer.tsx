@@ -30,10 +30,30 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const [currentView, setCurrentView] = useState<DrawerView>('cart');
   const [internalUrl, setInternalUrl] = useState('');
   const [urlError, setUrlError] = useState('');
-  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
-  const [privacyError, setPrivacyError] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [termsError, setTermsError] = useState('');
   const [showUrlHelp, setShowUrlHelp] = useState(false);
-  const [showCheckoutDisabled, setShowCheckoutDisabled] = useState(false);
+
+  // Validate URL format
+  const isValidSquarespaceUrl = (url: string): boolean => {
+    if (!url.trim()) return false;
+    
+    const trimmedUrl = url.trim();
+    
+    // Check if it ends with .squarespace.com
+    if (trimmedUrl.includes('.squarespace.com')) {
+      // Extract the domain part (without protocol if present)
+      const domainPart = trimmedUrl.replace(/^https?:\/\//, '');
+      return domainPart.endsWith('.squarespace.com') || domainPart === 'squarespace.com';
+    }
+    
+    return false;
+  };
+
+  // Check if form is valid for submission
+  const isFormValid = internalUrl.trim() !== '' && 
+                      isValidSquarespaceUrl(internalUrl) && 
+                      agreedToTerms;
 
   // Reset to cart view when drawer closes
   useEffect(() => {
@@ -42,8 +62,8 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
         setCurrentView('cart');
         setInternalUrl('');
         setUrlError('');
-        setAgreedToPrivacy(false);
-        setPrivacyError('');
+        setAgreedToTerms(false);
+        setTermsError('');
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -51,6 +71,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
 
   // Prevent body scroll when drawer is open
   useEffect(() => {
+    
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -67,7 +88,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
     try {
       await checkout({
         internalUrl,
-        agreedToPrivacy,
+        agreedToPrivacy: agreedToTerms,
       });
     } catch (error) {
       console.error('Checkout error:', error);
@@ -83,27 +104,58 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const handleBackToCart = () => {
     setCurrentView('cart');
     setUrlError('');
-    setPrivacyError('');
+    setTermsError('');
   };
 
-  const handleContinueToCheckout = () => {
+  const handleContinueToCheckout = async () => {
     let hasError = false;
 
     if (!internalUrl.trim()) {
       setUrlError(t.internalUrlRequired);
       hasError = true;
+    } else if (!isValidSquarespaceUrl(internalUrl)) {
+      setUrlError('Please enter a valid Squarespace URL (e.g., https://your-site.squarespace.com)');
+      hasError = true;
     }
 
-    if (!agreedToPrivacy) {
-      setPrivacyError(t.privacyPolicyRequired);
+    if (!agreedToTerms) {
+      setTermsError(t.confirmationRequired);
       hasError = true;
     }
 
     if (hasError) return;
 
     setUrlError('');
-    setPrivacyError('');
-    handleCheckout();
+    setTermsError('');
+    
+    setIsCheckingOut(true);
+
+    try {
+      // Extract plugin IDs from cart items (MongoDB ObjectIds)
+      const pluginIds = items.map(item => item.id);
+
+      // Register domain with backend
+      const domainResponse = await fetch('/api/domains/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          websiteUrl: internalUrl,
+          shopifyProductIds: pluginIds
+        }),
+      });
+
+      if (!domainResponse.ok) {
+        const errorData = await domainResponse.json();
+        throw new Error(errorData.error || 'Failed to register domain');
+      }
+
+      // If domain registration successful, proceed to checkout
+      await handleCheckout();
+    } catch (error) {
+      console.error('Domain registration error:', error);
+      alert(error instanceof Error ? error.message : 'Failed to register domain. Please try again.');
+      setIsCheckingOut(false);
+    }
   };
 
   const handleClose = () => {
@@ -113,8 +165,8 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
       setCurrentView('cart');
       setInternalUrl('');
       setUrlError('');
-      setAgreedToPrivacy(false);
-      setPrivacyError('');
+      setAgreedToTerms(false);
+      setTermsError('');
     }, 300);
   };
 
@@ -308,39 +360,52 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <input
-                      type="checkbox"
-                      id="privacyPolicy"
-                      checked={agreedToPrivacy}
-                      onChange={(e) => {
-                        setAgreedToPrivacy(e.target.checked);
-                        setPrivacyError('');
-                      }}
-                      className={classNames(
-                        "mt-0.5 w-3.5 h-3.5 rounded border cursor-pointer transition-colors",
-                        {
-                          'border-red-500': privacyError,
-                          'border-foreground/30 accent-foreground': !privacyError,
-                        }
-                      )}
-                    />
-                    <label htmlFor="privacyPolicy" className="text-xs text-foreground cursor-pointer">
-                      {t.privacyPolicyAgree}{' '}
-                      <a 
-                        href="/privacy-policy" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="underline hover:opacity-70 transition-opacity"
-                      >
-                        {t.privacyPolicy}
-                      </a>
-                    </label>
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-foreground">{t.confirmationHeading}</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        id="termsConfirmation"
+                        checked={agreedToTerms}
+                        onChange={(e) => {
+                          setAgreedToTerms(e.target.checked);
+                          setTermsError('');
+                        }}
+                        className={classNames(
+                          "mt-0.5 w-3.5 h-3.5 rounded border cursor-pointer transition-colors flex-shrink-0",
+                          {
+                            'border-red-500': termsError,
+                            'border-foreground/30 accent-foreground': !termsError,
+                          }
+                        )}
+                      />
+                      <label htmlFor="termsConfirmation" className="text-xs text-foreground cursor-pointer leading-relaxed">
+                        {t.confirmationAgree}{' '}
+                        <a 
+                          href="/privacy-policy" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="underline hover:opacity-70 transition-opacity"
+                        >
+                          {t.privacyPolicy}
+                        </a>
+                        {' '}and{' '}
+                        <a 
+                          href="/terms-of-service" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="underline hover:opacity-70 transition-opacity"
+                        >
+                          {t.termsOfService}
+                        </a>
+                        {t.confirmationText}
+                      </label>
+                    </div>
+                    {termsError && (
+                      <p className="text-red-500 text-xs mt-1">{termsError}</p>
+                    )}
                   </div>
-                  {privacyError && (
-                    <p className="text-red-500 text-xs mt-1">{privacyError}</p>
-                  )}
                 </div>
               </div>
             )}
@@ -360,24 +425,14 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                   {t.checkout}
                 </Button>
               ) : (
-                <div className="relative">
-                  <Button 
-                    size="lg" 
-                    fullWidth 
-                    disabled={true}
-                    onMouseEnter={() => setShowCheckoutDisabled(true)}
-                    onMouseLeave={() => setShowCheckoutDisabled(false)}
-                    onClick={() => setShowCheckoutDisabled(!showCheckoutDisabled)}
-                  >
-                    {t.continueToCheckout}
-                  </Button>
-                  {showCheckoutDisabled && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-foreground text-background rounded-lg shadow-lg z-10 text-xs leading-relaxed text-center">
-                      {t.checkoutDisabledMessage}
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground rotate-45"></div>
-                    </div>
-                  )}
-                </div>
+                <Button 
+                  size="lg" 
+                  fullWidth 
+                  disabled={!isFormValid || isCheckingOut}
+                  onClick={handleContinueToCheckout}
+                >
+                  {isCheckingOut ? t.processing : t.continueToCheckout}
+                </Button>
               )}
             </div>
           )}

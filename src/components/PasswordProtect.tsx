@@ -88,7 +88,7 @@ const PasswordProtect = ({ children, correctPassword, slug }: PasswordProtectPro
                                 id="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-3 border border-foreground/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-black bg-background text-foreground"
+                                className="w-full px-4 py-3 rounded-lg border bg-background text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-2 transition-all border-foreground/20 focus:ring-foreground/20"
                                 placeholder={t.passwordPlaceholder}
                                 autoFocus
                             />

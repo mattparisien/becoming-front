@@ -23,19 +23,20 @@ export async function fetchInstallationGuide(options: FetchInstallationGuideOpti
 
     try {
         // Fetch page data from Sanity
-        const guides = await fetchSanityData<InstallationGuide[]>(
+        const guide = await fetchSanityData<InstallationGuide>(
             INSTALLATION_GUIDE_QUERY,
             { params: { language: locale, slug } }
         );
 
-        const guide = guides?.[0];
 
         if (!guide || !guide.slug?.current) {
             return null;
         }
+        
+        
 
         const product = await fetchShopifyProduct(
-            guide.slug.current,
+            guide.slug.current || '',
             shopifyLanguage
         );
 
