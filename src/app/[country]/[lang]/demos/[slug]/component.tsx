@@ -26,6 +26,7 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
 
     console.log('DemoComponentManager treeConfig:', treeConfig);
     console.log('DemoComponentManager bundlePath:', bundlePath);
+    console.log('css', `${process.env.PLUGIN_BUNDLE_URL}/${slug}/assets/styles/main.css`)
 
     const DemoComponent = demoComponentRegistry[slug];
 
