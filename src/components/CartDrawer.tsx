@@ -33,8 +33,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [privacyError, setPrivacyError] = useState('');
   const [showUrlHelp, setShowUrlHelp] = useState(false);
-  const [showCheckoutDisabled, setShowCheckoutDisabled] = useState(false);
-
+console.log(items)
   // Reset to cart view when drawer closes
   useEffect(() => {
     if (!isOpen) {
@@ -51,6 +50,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
 
   // Prevent body scroll when drawer is open
   useEffect(() => {
+    
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -86,7 +86,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
     setPrivacyError('');
   };
 
-  const handleContinueToCheckout = () => {
+  const handleContinueToCheckout = async () => {
     let hasError = false;
 
     if (!internalUrl.trim()) {
@@ -103,7 +103,35 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
 
     setUrlError('');
     setPrivacyError('');
-    handleCheckout();
+    
+    setIsCheckingOut(true);
+
+    try {
+      // Extract plugin IDs from cart items (MongoDB ObjectIds)
+      const pluginIds = items.map(item => item.id);
+
+      // Register domain with backend
+      const domainResponse = await fetch('/api/domains/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          websiteUrl: internalUrl,
+          shopifyProductIds: pluginIds
+        }),
+      });
+
+      if (!domainResponse.ok) {
+        const errorData = await domainResponse.json();
+        throw new Error(errorData.error || 'Failed to register domain');
+      }
+
+      // If domain registration successful, proceed to checkout
+      await handleCheckout();
+    } catch (error) {
+      console.error('Domain registration error:', error);
+      alert(error instanceof Error ? error.message : 'Failed to register domain. Please try again.');
+      setIsCheckingOut(false);
+    }
   };
 
   const handleClose = () => {
@@ -360,24 +388,14 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                   {t.checkout}
                 </Button>
               ) : (
-                <div className="relative">
-                  <Button 
-                    size="lg" 
-                    fullWidth 
-                    disabled={true}
-                    onMouseEnter={() => setShowCheckoutDisabled(true)}
-                    onMouseLeave={() => setShowCheckoutDisabled(false)}
-                    onClick={() => setShowCheckoutDisabled(!showCheckoutDisabled)}
-                  >
-                    {t.continueToCheckout}
-                  </Button>
-                  {showCheckoutDisabled && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-foreground text-background rounded-lg shadow-lg z-10 text-xs leading-relaxed text-center">
-                      {t.checkoutDisabledMessage}
-                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground rotate-45"></div>
-                    </div>
-                  )}
-                </div>
+                <Button 
+                  size="lg" 
+                  fullWidth 
+                  disabled={isCheckingOut}
+                  onClick={handleContinueToCheckout}
+                >
+                  {isCheckingOut ? t.processing : t.continueToCheckout}
+                </Button>
               )}
             </div>
           )}

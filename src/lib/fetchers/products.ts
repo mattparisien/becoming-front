@@ -51,6 +51,7 @@ export async function getProduct(params: ProductParams): Promise<ProductWithAddi
         if (!shopifyProduct) return null;
 
         return {
+            
             additionalInfo: sanityProduct.additionalInfo,
             ...shopifyProduct
         };
