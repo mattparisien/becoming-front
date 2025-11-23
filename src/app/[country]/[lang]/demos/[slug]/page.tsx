@@ -44,8 +44,8 @@ export default async function DemoPage({ params }: Props) {
 
     const { lang, slug } = await params;
     const demo = await fetchSanityData<Demo | null>(DEMO_QUERY, { params: { slug, language: lang } });
+    console.log('DemoPage demo:', demo);
     if (!demo) {
-        console.log('not found in demo page called!')
         notFound();
     }
 
