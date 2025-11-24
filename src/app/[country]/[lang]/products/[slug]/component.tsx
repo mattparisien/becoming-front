@@ -59,7 +59,7 @@ const ProductPageComponent = ({ additionalInfo, ...product }: ProductPageCompone
     <div className="min-h-screen">
       <Container hasVerticalGutters>
         {/* Breadcrumb */}
-        <nav className="mb-8 text-sm text-foreground/60 sticky">
+        <nav className="mb-8 text-sm text-foreground/60">
           <Link href="/shop" className="hover:text-foreground transition-colors">
             {t.shop}
           </Link>
@@ -69,8 +69,8 @@ const ProductPageComponent = ({ additionalInfo, ...product }: ProductPageCompone
 
         {/* Plugin Details */}
         <div className="flex flex-col lg:flex-row gap-8 items-start">
-          {/* Images Column - Carousel on mobile, Scrollable on desktop */}
-          <div className="flex-1 w-full lg:w-auto">
+          {/* Images Column - Carousel on mobile, Sticky scrollable on desktop */}
+          <div className="flex-1 w-full lg:w-auto lg:sticky lg:top-[calc(var(--header-height)+2rem)] lg:self-start lg:max-h-[calc(100vh-var(--header-height)-2rem)] lg:overflow-y-auto">
             {/* Mobile Carousel (< lg) */}
             <div className="lg:hidden relative">
               <div className="overflow-hidden -mx-4 px-4" ref={emblaRef}>
@@ -160,7 +160,7 @@ const ProductPageComponent = ({ additionalInfo, ...product }: ProductPageCompone
           </div>
 
           {/* Info Column - Sticky */}
-          <div className="flex-1 lg:max-w-xl sticky top-[calc(var(--header-height)+theme(spacing.8))]">
+          <div className="flex-1 lg:max-w-xl">
             <div className="space-y-6">
               {/* Title */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl 2xl:text-7xl font-light text-foreground font-serif">
