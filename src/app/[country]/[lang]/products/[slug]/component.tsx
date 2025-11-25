@@ -8,8 +8,6 @@ import { ShopifyProductFlattened } from '@/lib/types/shopify';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import useEmblaCarousel from 'embla-carousel-react';
-import { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import TextModule from '@/components/modules/Text';
 import { PortableTextBlock } from '@portabletext/types';
@@ -23,37 +21,12 @@ type ProductPageComponentProps = ShopifyProductFlattened & {
 const ProductPageComponent = ({ additionalInfo, ...product }: ProductPageComponentProps) => {
   const { lang } = useParams();
   const t = getProductPageTranslations(lang as Locale);
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   // Get price
   const price = parseFloat(product.priceRange.maxVariantPrice.amount);
 
-  const hasMultipleImages = product.images.length > 1;
-
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const scrollTo = useCallback((index: number) => {
-    if (emblaApi) emblaApi.scrollTo(index);
-  }, [emblaApi]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on('select', onSelect);
-    emblaApi.on('reInit', onSelect);
-  }, [emblaApi, onSelect]);
+  // Check if media is video
+  const isVideo = product.media.mediaType === 'video';
 
   return (
     <div className="min-h-screen">
@@ -69,93 +42,28 @@ const ProductPageComponent = ({ additionalInfo, ...product }: ProductPageCompone
 
         {/* Plugin Details */}
         <div className="flex flex-col lg:flex-row gap-8 items-start">
-          {/* Images Column - Carousel on mobile, Sticky scrollable on desktop */}
-          <div className="flex-1 w-full lg:w-auto lg:sticky lg:top-[calc(var(--header-height)+2rem)] lg:self-start lg:max-h-[calc(100vh-var(--header-height)-2rem)] lg:overflow-y-auto">
-            {/* Mobile Carousel (< lg) */}
-            <div className="lg:hidden relative">
-              <div className="overflow-hidden -mx-4 px-4" ref={emblaRef}>
-                <div className="flex touch-pan-y -ml-4">
-                  {product.images.map((image, index) => (
-                    <div
-                      key={image.url || `product-image-${index}`}
-                      className="flex-[0_0_100%] min-w-0 pl-4"
-                    >
-                      <div className="aspect-3/2 rounded-2xl overflow-hidden bg-foreground/5 relative">
-                        <Image
-                          src={image.url}
-                          alt={image.altText || `${product.title} - Image ${index + 1}`}
-                          fill
-                          className="object-cover"
-                          sizes="100vw"
-                          priority={index === 0}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Navigation Arrows */}
-                {hasMultipleImages && (
-                  <>
-                    <button
-                      onClick={scrollPrev}
-                      className="cursor-pointer absolute left-2 top-1/2 -translate-y-1/2 p-2 hover:opacity-70 transition-opacity z-10"
-                      aria-label="Previous image"
-                    >
-                      <svg className="w-5 h-5 drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={scrollNext}
-                      className="cursor-pointer absolute right-2 top-1/2 -translate-y-1/2 p-2 hover:opacity-70 transition-opacity z-10"
-                      aria-label="Next image"
-                    >
-                      <svg className="w-5 h-5 drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-                      </svg>
-                    </button>
-                  </>
-                )}
-              </div>
-
-              {/* Dots Indicator */}
-              {hasMultipleImages && (
-                <div className="flex justify-center gap-1.5 mt-6 mb-8">
-                  {product.images.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => scrollTo(index)}
-                      className={classNames(
-                        "h-1 rounded-full transition-all duration-300",
-                        index === selectedIndex
-                          ? "bg-foreground w-8"
-                          : "bg-foreground/25 w-1 hover:bg-foreground/40"
-                      )}
-                      aria-label={`Go to image ${index + 1}`}
-                    />
-                  ))}
-                </div>
+          {/* Media Column - Sticky on desktop */}
+          <div className="flex-1 w-full lg:w-auto lg:sticky lg:top-[calc(var(--header-height)+2rem)] lg:self-start">
+            <div className="aspect-3/2 rounded-2xl overflow-hidden bg-foreground/5 relative">
+              {isVideo ? (
+                <video
+                  src={product.media.src}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Image
+                  src={product.media.src}
+                  alt={product.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
+                />
               )}
-            </div>
-
-            {/* Desktop Stacked Images (≥ lg) */}
-            <div className="hidden lg:block space-y-6">
-              {product.images.map((image, index) => (
-                <div
-                  key={image.url || `product-image-${index}`}
-                  className="aspect-3/2 rounded-2xl overflow-hidden bg-foreground/5 relative"
-                >
-                  <Image
-                    src={image.url}
-                    alt={image.altText || `${product.title} - Image ${index + 1}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    priority={index === 0}
-                  />
-                </div>
-              ))}
             </div>
           </div>
 

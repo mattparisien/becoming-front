@@ -21,9 +21,10 @@ const ProductsGrid = ({ products }: ProductsGridProps) => {
             title: product.store?.title || "Untitled",
             subtitle: product.store?.priceRange?.maxVariantPrice?.toString() || "",
             slug: `/${locale}/products/${product.store?.slug?.current || ""}`,
-            image: {
+            media: {
                 src: product.store?.previewImageUrl || "",
-                alt: ""
+                mediaType: 'image' as const,
+                mimeType: 'image/jpeg'
             }
         })) || [];
     }, [products, locale]);

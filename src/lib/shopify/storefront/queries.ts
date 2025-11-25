@@ -64,11 +64,23 @@ export const GET_PRODUCTS_QUERY = `
             title
             description
           }
-          images(first: 5) {
+          media(first: 10) {
             edges {
               node {
-                url
-                altText
+                ... on MediaImage {
+                  image {
+                    url
+                    altText
+                  }
+                  mediaType: __typename
+                }
+                ... on Video {
+                  sources {
+                    url
+                    mimeType
+                  }
+                  mediaType: __typename
+                }
               }
             }
           }
@@ -120,11 +132,23 @@ export const GET_PRODUCT_BY_HANDLE_QUERY = `
         title
         description
       }
-      images(first: 10) {
+      media(first: 10) {
         edges {
           node {
-            url
-            altText
+            ... on MediaImage {
+              image {
+                url
+                altText
+              }
+              mediaType: __typename
+            }
+            ... on Video {
+              sources {
+                url
+                mimeType
+              }
+              mediaType: __typename
+            }
           }
         }
       }
@@ -178,11 +202,23 @@ export const GET_COLLECTION_BY_HANDLE_QUERY = `
               title
               description
             }
-            images(first: 5) {
+            media(first: 10) {
               edges {
                 node {
-                  url
-                  altText
+                  ... on MediaImage {
+                    image {
+                      url
+                      altText
+                    }
+                    mediaType: __typename
+                  }
+                  ... on Video {
+                    sources {
+                      url
+                      mimeType
+                    }
+                    mediaType: __typename
+                  }
                 }
               }
             }

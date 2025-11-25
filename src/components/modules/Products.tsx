@@ -2,7 +2,7 @@
 
 import { ShopifyProductFlattened } from "@/lib/types/shopify";
 import { useMemo } from "react";
-import MasonryGrid from "../MasonryGrid";
+import MasonryGrid, { MasonryGridItem } from "../MasonryGrid";
 
 interface ProductsProps {
     products?: ShopifyProductFlattened[];
@@ -11,7 +11,7 @@ interface ProductsProps {
 
 const ProductsModule = ({ products }: ProductsProps) => {
 
-    const masonryGridItems = useMemo(() => {
+    const masonryGridItems : MasonryGridItem[] = useMemo(() => {
         if (!products) return [];
         return products.map(product => ({
             id: product.id,
@@ -20,9 +20,10 @@ const ProductsModule = ({ products }: ProductsProps) => {
             slug: product.collectionHandle
                 ? `/${product.collectionHandle}/${product.handle}`
                 : `/${product.handle}`,
-            image: {
-                src: product.images[0]?.url || "",
-                alt: product.images[0]?.altText || product.title
+            media: {
+                src: product.media.src,
+                mediaType: product.media.mediaType as 'image' | 'video',
+                mimeType: product.media.mimeType || ''
             }
         }));
     }, [products]);

@@ -4,6 +4,7 @@ import { shopifyStorefrontFetch } from '@/lib/shopify/storefront/client';
 import { GET_PRODUCT_BY_HANDLE_QUERY } from '@/lib/shopify/storefront/queries';
 import { ShopifyProduct, ShopifyProductFlattened } from '@/lib/types/shopify';
 import { fetchSanityData } from './useServerSideSanityQuery';
+import { flattenMedia } from '@/lib/helpers/flattenMedia';
 
 interface FetchInstallationGuideOptions {
     country: string;
@@ -175,7 +176,7 @@ export async function fetchShopifyProduct(
         return {
             ...product,
             collectionHandle: 'products', // Use 'products' as collection handle for URL
-            images: product.images.edges.map((imgEdge) => imgEdge.node),
+            media: flattenMedia(product.media.edges),
             variants: product.variants.edges.map((variantEdge) => variantEdge.node),
         };
     } catch (error) {
