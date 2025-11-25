@@ -66,6 +66,7 @@ export default function PasswordProtectForm({ slug, locale }: PasswordProtectFor
                             className="w-full px-4 py-3 border border-foreground/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-black bg-background text-foreground disabled:opacity-50"
                             placeholder={t.passwordPlaceholder}
                             autoFocus
+                            autoComplete="off"
                         />
                         {error && (
                             <p className="mt-2 text-sm text-red-600">{error}</p>

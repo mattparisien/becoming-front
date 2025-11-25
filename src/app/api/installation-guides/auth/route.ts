@@ -5,7 +5,6 @@ export async function POST(request: NextRequest) {
     try {
         const { password, slug } = await request.json();
 
-        
 
         // Validate inputs
         if (!password || !slug) {
@@ -19,7 +18,6 @@ export async function POST(request: NextRequest) {
         const apiKey = process.env.PLUGIN_API_KEY;
         const apiUrl = process.env.PLUGIN_API_URL;
 
-
         if (!apiKey || !apiUrl) {
             console.error('Missing PLUGIN_API_KEY or PLUGIN_API_URL environment variables');
             return NextResponse.json(
@@ -27,6 +25,7 @@ export async function POST(request: NextRequest) {
                 { status: 500 }
             );
         }
+
 
         // Make request to external API to validate authentication
         const authApiUrl = `${apiUrl}/${slug}/auth`;
@@ -53,6 +52,7 @@ export async function POST(request: NextRequest) {
             process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1';
         }
 
+
         if (apiResponse.status === 403) {
             console.error('API key authentication failed');
             return NextResponse.json(
@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
                 { status: 500 }
             );
         }
+
 
         if (!apiResponse.ok) {
             return NextResponse.json(

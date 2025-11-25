@@ -40,9 +40,11 @@ export async function generateMetadata(
 }
 
 export default async function InstallationGuidePage({ params }: Props) {
-    const { lang, slug } = await params;
+    const { country, lang, slug } = await params;
+
 
     const installationGuide = await fetchInstallationGuide({
+        country,
         locale: lang,
         slug
     });
@@ -53,7 +55,7 @@ export default async function InstallationGuidePage({ params }: Props) {
     }
 
     // Extract slug string - the query returns it as a string from product->store.slug.current
-    const slugString = (installationGuide as { slug?: string }).slug || slug;
+    const slugString = (installationGuide as { slug?: { current?: string } }).slug?.current || slug;
 
     // Check server-side authentication using hook
     const { isAuthenticated } = await checkInstallationGuideAuth(slugString);
