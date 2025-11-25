@@ -18,6 +18,48 @@ interface ModuleWithShopify extends SanityModule {
 }
 
 /**
+ * Helper function to flatten media from Shopify GraphQL response
+ * Handles both image and video media types
+ */
+function flattenMedia(mediaEdges: ShopifyProduct['media']['edges']): ShopifyProductFlattened['media'] {
+  const firstMedia = mediaEdges[0]?.node;
+  
+  if (!firstMedia) {
+    return {
+      mediaType: '',
+      src: '',
+    };
+  }
+
+  // Handle image media
+  if (firstMedia.image) {
+    return {
+      mediaType: 'image',
+      src: firstMedia.image.url,
+      mimeType: 'image/jpeg',
+    };
+  }
+
+  // Handle video media
+  if (firstMedia.sources && firstMedia.sources.length > 0) {
+    // Prefer video/mp4, fallback to first available source
+    const preferredSource = firstMedia.sources.find(s => s.mimeType === 'video/mp4') || firstMedia.sources[0];
+    
+    return {
+      mediaType: firstMedia.mediaType.toLowerCase(),
+      src: preferredSource.url,
+      mimeType: preferredSource.mimeType,
+    };
+  }
+
+  // Fallback for unknown media types
+  return {
+    mediaType: firstMedia.mediaType?.toLowerCase() || '',
+    src: '',
+  };
+}
+
+/**
  * Fetch page data from Sanity and resolve Shopify product modules
  * @param options - locale and slug for the page
  * @returns Promise resolving to the page with resolved Shopify data
@@ -76,19 +118,20 @@ export async function fetchPage(options: FetchPageOptions): Promise<SanityPage |
                   },
                 });
 
+
                 // Flatten the products structure and remove edges/nodes
                 // Add collection handle (page slug) to products for URL generation
                 products = productsData.products.edges.map((edge) => {
                   const product = edge.node;
+                  
                   return {
                     ...product,
-                    collectionHandle: 'products', // Use 'products' as collection handle for URL
-                    // Flatten images - remove edges/nodes structure
-                    images: product.images.edges.map((imgEdge) => imgEdge.node),
-                    // Flatten variants - remove edges/nodes structure
+                    collectionHandle: 'products',
+                    media: flattenMedia(product.media.edges),
                     variants: product.variants.edges.map((variantEdge) => variantEdge.node),
                   };
                 });
+                console.log('products fetched for module:', products);
                 break;
 
               // Add more cases for different collection types
@@ -187,8 +230,8 @@ export async function fetchShopifyCollection(
       const product = edge.node;
       return {
         ...product,
-        collectionHandle: 'products', // Use 'products' as collection handle for URL
-        images: product.images.edges.map((imgEdge) => imgEdge.node),
+        collectionHandle: 'products',
+        media: flattenMedia(product.media.edges),
         variants: product.variants.edges.map((variantEdge) => variantEdge.node),
       };
     });
@@ -236,8 +279,8 @@ export async function fetchShopifyProduct(
     // Flatten the product structure
     return {
       ...product,
-      collectionHandle: 'products', // Use 'products' as collection handle for URL
-      images: product.images.edges.map((imgEdge) => imgEdge.node),
+      collectionHandle: 'products',
+      media: flattenMedia(product.media.edges),
       variants: product.variants.edges.map((variantEdge) => variantEdge.node),
     };
   } catch (error) {
@@ -297,9 +340,8 @@ export async function fetchShopifyCollectionByHandle(
       const product = edge.node;
       return {
         ...product,
-        // Add 'products' as collection handle for URL generation
         collectionHandle: 'products',
-        images: product.images.edges.map((imgEdge) => imgEdge.node),
+        media: flattenMedia(product.media.edges),
         variants: product.variants.edges.map((variantEdge) => variantEdge.node),
       };
     }) as ShopifyProductFlattened[];

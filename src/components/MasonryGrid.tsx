@@ -1,21 +1,21 @@
 'use client';
 
-import PluginLinkItem from "./PluginLinkItem";
 import { useIntro } from "@/context/IntroContext";
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
+import PluginLinkItem from "./PluginLinkItem";
 
-export interface MasonryGridItem {
+export type MasonryGridItem = {
   id: number | string;
-  image: {
-    src: string;
-    alt: string;
-
-  },
   slug: string;
   title: string;
   subtitle: string;
-}
+  media: {
+    src: string;
+    mediaType: 'image' | 'video';
+    mimeType: string;
+  }
+};
 
 interface MasonryGridProps {
   items: MasonryGridItem[]

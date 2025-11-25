@@ -3,7 +3,7 @@ export interface ShopifyProductsResponse {
     products: {
         edges: Array<{
             node: ShopifyProduct;
-    }>;
+        }>;
     };
 }
 // Shopify Storefront API Types
@@ -11,6 +11,16 @@ export interface ShopifyProductsResponse {
 export interface ShopifyImage {
     url: string;
     altText?: string;
+}
+
+
+export interface ShopifyMedia {
+    mediaType: string;
+    image?: ShopifyImage;
+    sources?: Array<{
+        url: string;
+        mimeType: string;
+    }>;
 }
 
 export interface ShopifySEO {
@@ -49,9 +59,9 @@ export interface ShopifyProduct {
     tags: string[];
     vendor: string;
     seo: ShopifySEO;
-    images: {
+    media: {
         edges: Array<{
-            node: ShopifyImage;
+            node: ShopifyMedia;
         }>;
     };
     priceRange: ShopifyPriceRange;
@@ -73,7 +83,11 @@ export interface ShopifyProductFlattened {
     tags: string[];
     vendor: string;
     seo: ShopifySEO;
-    images: ShopifyImage[];
+    media: {
+        src: string;
+        mediaType: string;
+        mimeType?: string;
+    },
     priceRange: ShopifyPriceRange;
     variants: ShopifyVariant[];
     collectionHandle?: string; // Optional collection handle for URL construction
