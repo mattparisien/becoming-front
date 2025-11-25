@@ -6,6 +6,7 @@ import { ShopifyProduct, ShopifyProductFlattened } from '@/lib/types/shopify';
 import { fetchSanityData } from './useServerSideSanityQuery';
 
 interface FetchInstallationGuideOptions {
+    country: string;
     locale: string;
     slug: string;
 }
@@ -16,7 +17,7 @@ interface FetchInstallationGuideOptions {
  * @returns Promise resolving to the page with resolved Shopify data
  */
 export async function fetchInstallationGuide(options: FetchInstallationGuideOptions): Promise<InstallationGuide | null> {
-    const { locale, slug } = options;
+    const { country, locale, slug } = options;
 
     // Convert locale to Shopify LanguageCode format (e.g., 'en' -> 'EN', 'fr' -> 'FR')
     const shopifyLanguage = locale.toUpperCase();
@@ -37,7 +38,8 @@ export async function fetchInstallationGuide(options: FetchInstallationGuideOpti
 
         const product = await fetchShopifyProduct(
             guide.slug.current || '',
-            shopifyLanguage
+            shopifyLanguage,
+            country
         );
 
 
@@ -145,17 +147,21 @@ interface ProductByHandleResponse {
  */
 export async function fetchShopifyProduct(
     handle: string,
-    language?: string
+    language?: string,
+    country?: string
 ): Promise<ShopifyProductFlattened | null> {
     try {
+
         // Convert language to Shopify LanguageCode format if provided
         const shopifyLanguage = language ? language.toUpperCase() : undefined;
+        const shopifyCountry = country ? country.toUpperCase() : undefined;
 
         const shopifyData = await shopifyStorefrontFetch<ProductByHandleResponse>({
             query: GET_PRODUCT_BY_HANDLE_QUERY,
             variables: {
                 handle,
                 language: shopifyLanguage, // Pass language as GraphQL variable
+                country: shopifyCountry, // Pass country as GraphQL variable
             },
         });
 
