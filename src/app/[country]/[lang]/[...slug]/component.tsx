@@ -20,8 +20,6 @@ interface PageComponentProps {
 
 export default function PageComponent({ page }: PageComponentProps) {
 
-    console.log('page', page)
-
     const modules = page?.modules || [];
 
     if (!page || modules.length === 0) return notFound();

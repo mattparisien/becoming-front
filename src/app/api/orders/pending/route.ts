@@ -62,10 +62,6 @@ export async function POST(req: Request) {
 
     const data = await response.json();
 
-    console.log(`✅ Pending order created via Next.js API:`, {
-      customId: data.customId,
-      shopifyProductIds,
-    });
 
     return NextResponse.json(data, { status: 201 });
 
