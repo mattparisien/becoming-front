@@ -20,10 +20,12 @@ export async function POST(req: Request) {
 
     // Call your backend API to register the domain
     const backendUrl = process.env.BECOMING_API_URL || 'http://localhost:3001';
+    const apiKey = process.env.BECOMING_API_KEY || '';
     const response = await fetch(`${backendUrl}/admin/domains`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-api-key': apiKey,
       },
       body: JSON.stringify({
         websiteUrl,
