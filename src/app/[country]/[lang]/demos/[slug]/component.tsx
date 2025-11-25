@@ -65,6 +65,7 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
                                 baseUrl: window.location.origin,
                                 internalUrl: window.location.origin,
                             },
+                            templateVersion: "7.1",
                             pageType: 1
                         };
                     `
