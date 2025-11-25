@@ -82,7 +82,6 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       onClick={handleAddToCart}
       size="lg"
       fullWidth
-      disabled={isAdded}
     >
       {isAdded ? t.addedSuccessfully : t.addToCart}
     </Button>
