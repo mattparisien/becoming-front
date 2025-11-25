@@ -4,7 +4,7 @@ import { SanityPage, SanityModule } from '@/lib/types/sanity';
 import { shopifyStorefrontFetch } from '@/lib/shopify/storefront/client';
 import { GET_PRODUCTS_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_COLLECTION_BY_HANDLE_QUERY } from '@/lib/shopify/storefront/queries';
 import { ShopifyProduct, ShopifyProductFlattened, ShopifyProductsResponse } from '@/lib/types/shopify';
-import { cache } from "react";
+import { unstable_cache } from "next/cache";
 
 interface FetchPageOptions {
   country: string;
@@ -64,7 +64,7 @@ function flattenMedia(mediaEdges: ShopifyProduct['media']['edges']): ShopifyProd
  * @param options - locale and slug for the page
  * @returns Promise resolving to the page with resolved Shopify data
  */
-export async function fetchPage(options: FetchPageOptions): Promise<SanityPage | null> {
+async function _fetchPage(options: FetchPageOptions): Promise<SanityPage | null> {
   const { lang, country, slug } = options;
 
 
@@ -184,6 +184,12 @@ export async function fetchPage(options: FetchPageOptions): Promise<SanityPage |
   }
 }
 
+export const fetchPage = unstable_cache(
+  _fetchPage,
+  ['page-data'],
+  { revalidate: 3600, tags: ['page'] }
+);
+
 async function _fetchExcludedPageSlugs(): Promise<string[]> {
   try {
     const excludedPages = await fetchSanityData<{ slug: string }[]>(
@@ -197,7 +203,11 @@ async function _fetchExcludedPageSlugs(): Promise<string[]> {
   }
 };
 
-export const fetchExcludedSlugs = cache(_fetchExcludedPageSlugs);
+export const fetchExcludedSlugs = unstable_cache(
+  _fetchExcludedPageSlugs,
+  ['excluded-slugs'],
+  { revalidate: 3600, tags: ['page-slugs'] }
+);
 
 
 /**
@@ -207,7 +217,7 @@ export const fetchExcludedSlugs = cache(_fetchExcludedPageSlugs);
  * @param language - The language/locale for the products (e.g., 'en', 'fr')
  * @returns Promise resolving to array of flattened products
  */
-export async function fetchShopifyCollection(
+async function _fetchShopifyCollection(
   collectionKey: string,
   limit: number = 50,
   language?: string
@@ -241,6 +251,12 @@ export async function fetchShopifyCollection(
   }
 }
 
+export const fetchShopifyCollection = unstable_cache(
+  _fetchShopifyCollection,
+  ['shopify-collection'],
+  { revalidate: 3600, tags: ['products'] }
+);
+
 interface ProductByHandleResponse {
   productByHandle: ShopifyProduct | null;
 }
@@ -251,7 +267,7 @@ interface ProductByHandleResponse {
  * @param language - The language/locale for the product (e.g., 'en', 'fr')
  * @returns Promise resolving to the flattened product or null
  */
-export async function fetchShopifyProduct(
+async function _fetchShopifyProduct(
   handle: string,
   language: string,
   country: string
@@ -289,6 +305,12 @@ export async function fetchShopifyProduct(
   }
 }
 
+export const fetchShopifyProduct = unstable_cache(
+  _fetchShopifyProduct,
+  ['shopify-product'],
+  { revalidate: 3600, tags: ['product'] }
+);
+
 interface CollectionByHandleResponse {
   collection: {
     id: string;
@@ -311,7 +333,7 @@ interface CollectionByHandleResponse {
  * @param limit - Maximum number of products to fetch
  * @returns Promise resolving to collection info and flattened products
  */
-export async function fetchShopifyCollectionByHandle(
+async function _fetchShopifyCollectionByHandle(
   collectionHandle: string,
   language?: string,
   limit: number = 50
@@ -361,6 +383,12 @@ export async function fetchShopifyCollectionByHandle(
     return null;
   }
 }
+
+export const fetchShopifyCollectionByHandle = unstable_cache(
+  _fetchShopifyCollectionByHandle,
+  ['shopify-collection-by-handle'],
+  { revalidate: 3600, tags: ['collection', 'products'] }
+);
 
 /**
  * Fetch a single product from a specific Shopify collection by handles (server-side)
