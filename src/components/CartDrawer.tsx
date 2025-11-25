@@ -140,8 +140,6 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
 
       const { customId } = await pendingOrderResponse.json();
 
-      console.log('✅ Pending order created:', customId);
-
       // Step 2: Proceed to Shopify checkout with customId in metadata
       await checkout({
         internalUrl,

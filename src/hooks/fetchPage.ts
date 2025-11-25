@@ -90,7 +90,6 @@ async function _fetchPage(options: FetchPageOptions): Promise<SanityPage | null>
                     variants: product.variants.edges.map((variantEdge) => variantEdge.node),
                   };
                 });
-                console.log('products fetched for module:', products);
                 break;
 
               // Add more cases for different collection types
