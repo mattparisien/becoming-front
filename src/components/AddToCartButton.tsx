@@ -15,7 +15,7 @@ interface AddToCartButtonProps {
 
 // Type guard to check if product is flattened
 function isFlattened(product: ShopifyProduct | ShopifyProductFlattened): product is ShopifyProductFlattened {
-  return Array.isArray((product as ShopifyProductFlattened).images);
+  return 'src' in ((product as ShopifyProductFlattened).media || {});
 }
 
 const AddToCartButton = ({ product }: AddToCartButtonProps) => {
@@ -33,9 +33,9 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       ? product.variants[0]
       : product.variants.edges[0]?.node;
 
-    const firstImage = isFlattened(product)
-      ? product.images[0]
-      : product.images.edges[0]?.node;
+    const imageUrl = isFlattened(product)
+      ? product.media.src
+      : product.media.edges[0]?.node?.image?.url || '';
 
     const price = parseFloat(product.priceRange.maxVariantPrice.amount);
 
@@ -48,7 +48,7 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       name: product.title,
       description: product.descriptionHtml,
       price: price,
-      image: firstImage?.url || '',
+      image: imageUrl,
       category: product.productType || '',
       featured: false,
       size: 'medium' as const

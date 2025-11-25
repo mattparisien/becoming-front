@@ -5,6 +5,7 @@ import { shopifyStorefrontFetch } from '@/lib/shopify/storefront/client';
 import { GET_PRODUCTS_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_COLLECTION_BY_HANDLE_QUERY } from '@/lib/shopify/storefront/queries';
 import { ShopifyProduct, ShopifyProductFlattened, ShopifyProductsResponse } from '@/lib/types/shopify';
 import { unstable_cache } from "next/cache";
+import { flattenMedia } from '@/lib/helpers/flattenMedia';
 
 interface FetchPageOptions {
   country: string;
@@ -15,48 +16,6 @@ interface FetchPageOptions {
 interface ModuleWithShopify extends SanityModule {
   shopifyFetchCollectionKey?: string;
   products?: ShopifyProductFlattened[];
-}
-
-/**
- * Helper function to flatten media from Shopify GraphQL response
- * Handles both image and video media types
- */
-function flattenMedia(mediaEdges: ShopifyProduct['media']['edges']): ShopifyProductFlattened['media'] {
-  const firstMedia = mediaEdges[0]?.node;
-  
-  if (!firstMedia) {
-    return {
-      mediaType: '',
-      src: '',
-    };
-  }
-
-  // Handle image media
-  if (firstMedia.image) {
-    return {
-      mediaType: 'image',
-      src: firstMedia.image.url,
-      mimeType: 'image/jpeg',
-    };
-  }
-
-  // Handle video media
-  if (firstMedia.sources && firstMedia.sources.length > 0) {
-    // Prefer video/mp4, fallback to first available source
-    const preferredSource = firstMedia.sources.find(s => s.mimeType === 'video/mp4') || firstMedia.sources[0];
-    
-    return {
-      mediaType: firstMedia.mediaType.toLowerCase(),
-      src: preferredSource.url,
-      mimeType: preferredSource.mimeType,
-    };
-  }
-
-  // Fallback for unknown media types
-  return {
-    mediaType: firstMedia.mediaType?.toLowerCase() || '',
-    src: '',
-  };
 }
 
 /**

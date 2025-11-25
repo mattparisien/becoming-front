@@ -39,7 +39,7 @@ export async function generateMetadata(
   // Use Shopify SEO data if available, otherwise fallback to product data, then parent
   const title = product.seo?.title || product.title || (typeof globalTitle === 'string' ? globalTitle : 'Product');
   const description = product.seo?.description || product.description || globalDescription || '';
-  const ogImage = product.images.length > 0 ? product.images[0].url : undefined;
+  const ogImage = product.media?.src && product.media.mediaType === 'image' ? product.media.src : undefined;
 
   // Get i18n configuration for alternates
   const [countryLocaleMap] = await Promise.all([
@@ -75,7 +75,7 @@ export async function generateMetadata(
       title,
       description,
       url: `${baseUrl}/${country}/${lang}/products/${slug}`,
-      images: ogImage ? [{ url: ogImage, alt: product.images[0].altText || product.title }] : [],
+      images: ogImage ? [{ url: ogImage, alt: product.title }] : [],
     },
     robots: {
       index: true,
@@ -97,7 +97,6 @@ export default async function Page({ params }: Props) {
   
   const product = await getProduct({ slug, country, lang });
 
-  console.log('Product:', product);
   if (!product) {
     notFound();
   }
@@ -123,7 +122,7 @@ export default async function Page({ params }: Props) {
     '@type': 'Product',
     name: product.title,
     description: product.description || product.seo?.description || '',
-    image: product.images.map((img: { url: string }) => img.url),
+    image: product.media?.src ? [product.media.src] : [],
     brand: {
       '@type': 'Brand',
       name: brandName,
