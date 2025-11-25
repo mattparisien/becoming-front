@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 const BECOMING_API_URL = process.env.BECOMING_API_URL || 'http://localhost:3001';
+const BECOMING_API_KEY = process.env.BECOMING_API_KEY || '';
 
 /**
  * POST /api/orders/pending
@@ -42,6 +43,7 @@ export async function POST(req: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-api-key': BECOMING_API_KEY,
       },
       body: JSON.stringify({
         shopifyProductIds,
@@ -90,7 +92,11 @@ export async function GET(req: Request) {
       );
     }
 
-    const response = await fetch(`${BECOMING_API_URL}/api/orders/pending-order/${customId}`);
+    const response = await fetch(`${BECOMING_API_URL}/api/orders/pending-order/${customId}`, {
+      headers: {
+        'x-api-key': BECOMING_API_KEY,
+      },
+    });
 
     if (!response.ok) {
       if (response.status === 404) {
