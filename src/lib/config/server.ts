@@ -65,7 +65,7 @@ async function _fetchServerConfig(): Promise<ServerConfig> {
 
     return config;
   } catch (error) {
-    console.error('[ServerConfig] Error fetching global data:', error);
+    console.error('[ServerConfig] Error fetching global datam:', error);
     
     // If we have stale cache, return it
     if (cachedConfig) {
