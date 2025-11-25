@@ -35,7 +35,7 @@ export default function CodeBlock({ value }: CodeBlockProps) {
             )}
             <button
                 onClick={handleCopy}
-                className="cursor-pointer absolute top-2 right-2 p-1.5 rounded bg-foreground/10 hover:bg-foreground/15 border border-foreground/20 transition-colors"
+                className="cursor-pointer absolute top-2 right-2 p-1.5 rounded bg-foreground/30 hover:bg-foreground/40 border border-foreground/40 transition-colors"
                 aria-label="Copy code"
                 title={copied ? 'Copied!' : 'Copy code'}
             >

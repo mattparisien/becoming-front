@@ -37,6 +37,14 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       ? product.media.src
       : product.media.edges[0]?.node?.image?.url || '';
 
+    const mediaType = isFlattened(product)
+      ? product.media.mediaType
+      : (product.media.edges[0]?.node?.image ? 'image' : 'video');
+
+    const mimeType = isFlattened(product)
+      ? product.media.mimeType
+      : product.media.edges[0]?.node?.sources?.[0]?.mimeType;
+
     const price = parseFloat(product.priceRange.maxVariantPrice.amount);
 
     // Convert Shopify product to cart item format
@@ -49,6 +57,8 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       description: product.descriptionHtml,
       price: price,
       image: imageUrl,
+      mediaType: mediaType as 'image' | 'video',
+      mimeType: mimeType,
       category: product.productType || '',
       featured: false,
       size: 'medium' as const

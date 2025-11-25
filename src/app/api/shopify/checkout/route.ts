@@ -74,6 +74,13 @@ export async function POST(req: Request) {
       });
     }
 
+    if (metadata?.customId) {
+      attributes.push({
+        key: 'Custom Order ID',
+        value: metadata.customId,
+      });
+    }
+
     // Transform line items to cart lines format
     const cartInput: {
       lines: { merchandiseId: string; quantity: number }[];
