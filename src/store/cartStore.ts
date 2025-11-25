@@ -14,7 +14,7 @@ interface CartState {
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
-  checkout: (metadata?: { internalUrl: string; agreedToPrivacy: boolean }) => Promise<void>;
+  checkout: (metadata?: { internalUrl: string; agreedToPrivacy: boolean; customId?: string }) => Promise<void>;
 }
 
 // Custom cookie storage

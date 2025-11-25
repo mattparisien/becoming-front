@@ -82,21 +82,6 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
     };
   }, [isOpen]);
 
-  const handleCheckout = async () => {
-    setIsCheckingOut(true);
-
-    try {
-      await checkout({
-        internalUrl,
-        agreedToPrivacy: agreedToTerms,
-      });
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Failed to create checkout. Please try again.');
-      setIsCheckingOut(false);
-    }
-  };
-
   const handleProceedToCheckout = () => {
     setCurrentView('checkout');
   };
@@ -134,26 +119,38 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
       // Extract plugin IDs from cart items (MongoDB ObjectIds)
       const pluginIds = items.map(item => item.id);
 
-      // Register domain with backend
-      const domainResponse = await fetch('/api/domains/register', {
+      // Step 1: Create pending order in backend
+      const pendingOrderResponse = await fetch('/api/orders/pending', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          websiteUrl: internalUrl,
-          shopifyProductIds: pluginIds
+          shopifyProductIds: pluginIds,
+          metadata: {
+            internalUrl,
+            agreedToPrivacy: agreedToTerms,
+            agreedAt: new Date().toISOString(),
+          }
         }),
       });
 
-      if (!domainResponse.ok) {
-        const errorData = await domainResponse.json();
-        throw new Error(errorData.error || 'Failed to register domain');
+      if (!pendingOrderResponse.ok) {
+        const errorData = await pendingOrderResponse.json();
+        throw new Error(errorData.error || 'Failed to create pending order');
       }
 
-      // If domain registration successful, proceed to checkout
-      await handleCheckout();
+      const { customId } = await pendingOrderResponse.json();
+
+      console.log('✅ Pending order created:', customId);
+
+      // Step 2: Proceed to Shopify checkout with customId in metadata
+      await checkout({
+        internalUrl,
+        agreedToPrivacy: agreedToTerms,
+        customId, // Include customId for webhook processing
+      });
     } catch (error) {
-      console.error('Domain registration error:', error);
-      alert(error instanceof Error ? error.message : 'Failed to register domain. Please try again.');
+      console.error('Checkout preparation error:', error);
+      alert(error instanceof Error ? error.message : 'Failed to prepare checkout. Please try again.');
       setIsCheckingOut(false);
     }
   };
@@ -238,16 +235,27 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                       key={idx}
                       className="flex gap-4 p-4 bg-foreground/5 rounded-xl"
                     >
-                      {/* Item Image */}
+                      {/* Item Image/Video */}
                       <div className="w-24 h-24 rounded-lg overflow-hidden bg-foreground/10 flex-shrink-0">
                         {item.image ? (
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={96}
-                            height={96}
-                            className="w-full h-full object-cover"
-                          />
+                          item.mediaType === 'video' ? (
+                            <video
+                              src={item.image}
+                              className="w-full h-full object-cover"
+                              autoPlay
+                              loop
+                              muted
+                              playsInline
+                            />
+                          ) : (
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              width={96}
+                              height={96}
+                              className="w-full h-full object-cover"
+                            />
+                          )
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-foreground/30">
                             {t.noImage}
@@ -421,7 +429,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                 </span>
               </div>
               {currentView === 'cart' ? (
-                <Button size="lg" fullWidth onClick={handleProceedToCheckout} disabled>
+                <Button size="lg" fullWidth onClick={handleProceedToCheckout}>
                   {t.checkout}
                 </Button>
               ) : (

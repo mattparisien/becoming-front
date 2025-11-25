@@ -7,6 +7,8 @@ export interface Plugin {
   description: string;
   price: number;
   image: string;
+  mediaType?: 'image' | 'video'; // Type of media
+  mimeType?: string; // MIME type for videos
   category: string;
   featured: boolean;
   size: "small" | "medium" | "large";
