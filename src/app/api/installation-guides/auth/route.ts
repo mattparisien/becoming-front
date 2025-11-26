@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': apiKey,
+                'X-API-Key': apiKey,
             },
             body: JSON.stringify({ password }),
         };
