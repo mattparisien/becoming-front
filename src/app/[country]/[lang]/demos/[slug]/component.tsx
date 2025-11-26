@@ -37,8 +37,12 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
 
     const DemoComponent = demoComponentRegistry[slug];
 
+    type Target = {
+        selector: string;
+        condition?: boolean;
+    };
 
-    const className = targets?.filter(target => target.selector.startsWith(".") && !target.condition).map(target => target.selector.replace(".", "")).join(' ') || '';
+    const className = targets?.filter((target: Target) => target.selector.startsWith(".") && !target.condition).map((target: Target) => target.selector.replace(".", "")).join(' ') || '';
 
     const isComponentNeeded = true;
 
