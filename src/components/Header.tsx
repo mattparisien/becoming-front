@@ -36,13 +36,21 @@ const Header = ({ title, countryCode, initialCartCount }: HeaderProps) => {
   
   // Use server-rendered count initially, then sync with store
   const [cartCount, setCartCount] = useState(initialCartCount);
+  const [isMounted, setIsMounted] = useState(false);
   const storeCartCount = useCartStore((state) => state.getTotalItems());
   const hasIntroCompletedRef = useRef(false);
 
+  // Mark component as mounted to prevent hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Sync with store after hydration
   useEffect(() => {
-    setCartCount(storeCartCount);
-  }, [storeCartCount]);
+    if (isMounted) {
+      setCartCount(storeCartCount);
+    }
+  }, [storeCartCount, isMounted]);
 
   const { chars } = useSplitText({
     elementId: 'header-logo',
@@ -143,8 +151,8 @@ const Header = ({ title, countryCode, initialCartCount }: HeaderProps) => {
                   onClick={openCartDrawer}
                 >
                   <span className={classNames("font-sans inline-block transition-transform duration-100", {
-                  })}>
-                    {t.cart} {`(${cartCount})`}
+                  })} suppressHydrationWarning>
+                    {t.cart} {`(${isMounted ? cartCount : initialCartCount})`}
                   </span>
                 </button>
               </div>

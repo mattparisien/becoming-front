@@ -33,6 +33,12 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [termsError, setTermsError] = useState('');
   const [showUrlHelp, setShowUrlHelp] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Validate URL format
   const isValidSquarespaceUrl = (url: string): boolean => {
@@ -194,7 +200,9 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
           <div className="border-b border-foreground/10 p-6">
             <div className="flex items-center justify-between">
               {currentView === 'cart' ? (
-                <h2 className="text-3xl font-serif text-foreground">{t.cart} ({getTotalItems()})</h2>
+                <h2 className="text-3xl font-serif text-foreground" suppressHydrationWarning>
+                  {t.cart} ({isMounted ? getTotalItems() : 0})
+                </h2>
               ) : (
                 <button
                   onClick={handleBackToCart}
