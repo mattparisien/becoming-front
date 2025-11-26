@@ -24,23 +24,26 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
     const shouldShowWarning = useMemo(() => {
         if (!pluginJSON || typeof window === 'undefined') return false;
         
-        const { supportedPlatforms } = JSON.parse(pluginJSON);
-        return (!supportedPlatforms.includes("mobile") && isMobile()) || 
-               (!supportedPlatforms.includes("tablet") && isTablet());
+        const { deviceCompatibility } = JSON.parse(pluginJSON);
+        return (!deviceCompatibility.mobile && isMobile()) || 
+               (!deviceCompatibility.tablet && isTablet());
     }, [pluginJSON]);
 
     const [showMobileWarning, setShowMobileWarning] = useState<boolean>(shouldShowWarning);
 
     if (!pluginJSON) return notFound();
 
-    const { treeConfig } = JSON.parse(pluginJSON);
+    const { targets } = JSON.parse(pluginJSON);
 
     const DemoComponent = demoComponentRegistry[slug];
 
+    type Target = {
+        selector: string;
+        condition?: boolean;
+    };
 
-    const className = typeof treeConfig === "string" && treeConfig.includes(",.")
-        ? treeConfig.split(",").map(x => x.replace(".", " ")).join(" ")
-        : undefined;
+    const className = targets?.filter((target: Target) => target.selector.startsWith(".") && !target.condition).map((target: Target) => target.selector.replace(".", "")).join(' ') || '';
+
     const isComponentNeeded = true;
 
 
