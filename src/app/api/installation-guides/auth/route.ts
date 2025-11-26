@@ -5,7 +5,6 @@ export async function POST(request: NextRequest) {
     try {
         const { password, slug } = await request.json();
 
-
         // Validate inputs
         if (!password || !slug) {
             return NextResponse.json(
@@ -15,13 +14,13 @@ export async function POST(request: NextRequest) {
         }
 
         // Validate environment variables
-        const apiKey = process.env.PLUGIN_API_KEY;
+        const apiKey = process.env.BECOMING_API_KEY;
         const apiUrl = process.env.PLUGIN_API_URL;
 
         console.log('password:', password)
 
         if (!apiKey || !apiUrl) {
-            console.error('Missing PLUGIN_API_KEY or PLUGIN_API_URL environment variables');
+            console.error('Missing BECOMING_API_KEY or PLUGIN_API_URL environment variables');
             return NextResponse.json(
                 { error: 'Server configuration error' },
                 { status: 500 }
@@ -31,6 +30,7 @@ export async function POST(request: NextRequest) {
 
         // Make request to external API to validate authentication
         const authApiUrl = `${apiUrl}/${slug}/auth`;
+        
         
         // In development, we may need to bypass SSL certificate validation
         const fetchOptions: RequestInit = {
@@ -90,6 +90,7 @@ export async function POST(request: NextRequest) {
             path: '/',
         });
 
+        
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error('Auth error:', error);
