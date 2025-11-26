@@ -435,7 +435,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                 </span>
               </div>
               {currentView === 'cart' ? (
-                <Button size="lg" fullWidth onClick={handleProceedToCheckout}>
+                <Button size="lg" fullWidth onClick={handleProceedToCheckout} disabled>
                   {t.checkout}
                 </Button>
               ) : (
