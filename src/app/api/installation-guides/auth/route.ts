@@ -73,9 +73,9 @@ export async function POST(request: NextRequest) {
 
         const apiData = await apiResponse.json();
 
-        if (!apiData.isAuthenticated) {
+        if (!apiData.valid) {
             return NextResponse.json(
-                { error: 'Incorrect password' },
+                { error: apiData.message || 'Incorrect password' },
                 { status: 401 }
             );
         }
