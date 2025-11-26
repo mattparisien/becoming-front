@@ -17,11 +17,11 @@ export async function checkInstallationGuideAuth(
 }
 
     // Validate cookie with the external API
-    const apiKey = process.env.PLUGIN_API_KEY;
+    const apiKey = process.env.BECOMING_API_KEY;
     const apiUrl = process.env.PLUGIN_API_URL;
 
     if (!apiKey || !apiUrl) {
-        console.error('Missing PLUGIN_API_KEY or PLUGIN_API_URL environment variables');
+        console.error('Missing BECOMING_API_KEY or PLUGIN_API_URL environment variables');
         return { isAuthenticated: false };
     }
 
@@ -37,7 +37,7 @@ export async function checkInstallationGuideAuth(
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': apiKey,
+                'X-API-Key': apiKey,
             },
             body: JSON.stringify({ password: authCookie.value }),
         });
@@ -53,7 +53,7 @@ export async function checkInstallationGuideAuth(
 
         const apiData = await apiResponse.json();
 
-        return { isAuthenticated: apiData.isAuthenticated || false };
+        return { isAuthenticated: apiData.valid || false };
     } catch (error) {
         console.error('Auth check error:', error);
         return { isAuthenticated: false };
