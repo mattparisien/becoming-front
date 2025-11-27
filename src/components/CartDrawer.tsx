@@ -260,16 +260,27 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                       key={item.lineId}
                       className="flex gap-4 p-4 bg-foreground/5 rounded-xl"
                     >
-                      {/* Item Image */}
+                      {/* Item Image/Video */}
                       <div className="w-24 h-24 rounded-lg overflow-hidden bg-foreground/10 flex-shrink-0">
                         {item.image ? (
-                          <Image
-                            src={item.image}
-                            alt={item.productTitle}
-                            width={96}
-                            height={96}
-                            className="w-full h-full object-cover"
-                          />
+                          item.mediaType === 'video' ? (
+                            <video
+                              src={item.image}
+                              className="w-full h-full object-cover"
+                              autoPlay
+                              loop
+                              muted
+                              playsInline
+                            />
+                          ) : (
+                            <Image
+                              src={item.image}
+                              alt={item.productTitle}
+                              width={96}
+                              height={96}
+                              className="w-full h-full object-cover"
+                            />
+                          )
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-foreground/30">
                             {t.noImage}

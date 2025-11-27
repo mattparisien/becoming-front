@@ -16,6 +16,8 @@ export interface CartItem {
   currencyCode: string;
   image: string;
   imageAlt: string;
+  mediaType: 'image' | 'video';
+  mimeType: string;
 }
 
 interface CartCost {
@@ -143,14 +145,29 @@ export const useCartStore = create<CartState>()((set, get) => ({
 
   updateQuantity: async (lineId: string, quantity: number) => {
     if (!get().cartId) return;
-    set({ isLoading: true, error: null });
 
+    // Handle remove via quantity
+    if (quantity <= 0) {
+      await get().removeItem(lineId);
+      return;
+    }
+
+    // Optimistic update
+    const previousItems = get().items;
+    const updatedItems = previousItems.map((item) =>
+      item.lineId === lineId ? { ...item, quantity } : item
+    );
+    const newTotalQuantity = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
+    const newTotal = updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    set({
+      items: updatedItems,
+      totalQuantity: newTotalQuantity,
+      cost: get().cost ? { ...get().cost!, total: newTotal, subtotal: newTotal } : null,
+    });
+
+    // Sync with API in background
     try {
-      if (quantity <= 0) {
-        await get().removeItem(lineId);
-        return;
-      }
-
       const data = await fetchCart('PATCH', {
         lines: [{ id: lineId, quantity }],
       });
@@ -161,40 +178,53 @@ export const useCartStore = create<CartState>()((set, get) => ({
         items: data.items || [],
         totalQuantity: data.totalQuantity || 0,
         cost: data.cost,
-        isLoading: false,
       });
     } catch (error) {
       console.error('Failed to update quantity:', error);
-      set({
-        isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to update quantity',
-      });
-      throw error;
+      // Revert on error
+      set({ items: previousItems, error: error instanceof Error ? error.message : 'Failed to update quantity' });
     }
   },
 
   removeItem: async (lineId: string) => {
     if (!get().cartId) return;
-    set({ isLoading: true, error: null });
 
+    // Optimistic update - remove item immediately from UI
+    const previousItems = get().items;
+    const previousTotalQuantity = get().totalQuantity;
+    const previousCost = get().cost;
+
+    const updatedItems = previousItems.filter((item) => item.lineId !== lineId);
+    const newTotalQuantity = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
+    const newTotal = updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    set({
+      items: updatedItems,
+      totalQuantity: newTotalQuantity,
+      cost: previousCost ? { ...previousCost, total: newTotal, subtotal: newTotal } : null,
+    });
+
+    // Sync with Shopify API in background
     try {
       const data = await fetchCart('DELETE', { lineIds: [lineId] });
 
+      // Update with server response (ensures consistency)
       set({
         cartId: data.id,
         checkoutUrl: data.checkoutUrl,
         items: data.items || [],
         totalQuantity: data.totalQuantity || 0,
         cost: data.cost,
-        isLoading: false,
       });
     } catch (error) {
       console.error('Failed to remove item:', error);
+      // Revert optimistic update on error
       set({
-        isLoading: false,
+        items: previousItems,
+        totalQuantity: previousTotalQuantity,
+        cost: previousCost,
         error: error instanceof Error ? error.message : 'Failed to remove item',
       });
-      throw error;
     }
   },
 

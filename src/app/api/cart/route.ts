@@ -23,22 +23,58 @@ function formatCartResponse(cart: ShopifyCart | null) {
     return { id: null, checkoutUrl: null, items: [], totalQuantity: 0, cost: null };
   }
 
-  const items = cart.lines.edges.map(({ node }) => ({
-    lineId: node.id,
-    quantity: node.quantity,
-    variantId: node.merchandise.id,
-    variantTitle: node.merchandise.title,
-    productId: node.merchandise.product.id,
-    productTitle: node.merchandise.product.title,
-    productHandle: node.merchandise.product.handle,
-    productType: node.merchandise.product.productType,
-    description: node.merchandise.product.description,
-    descriptionHtml: node.merchandise.product.descriptionHtml,
-    price: parseFloat(node.merchandise.price.amount),
-    currencyCode: node.merchandise.price.currencyCode,
-    image: node.merchandise.image?.url || node.merchandise.product.featuredImage?.url || "",
-    imageAlt: node.merchandise.image?.altText || node.merchandise.product.featuredImage?.altText || "",
-  }));
+  const items = cart.lines.edges.map(({ node }) => {
+    const product = node.merchandise.product;
+    const firstMedia = product.media?.edges?.[0]?.node;
+    
+    // Determine media type and URL
+    let mediaUrl = "";
+    let mediaType: "image" | "video" = "image";
+    let mimeType = "";
+    
+    if (firstMedia) {
+      if ("mediaContentType" in firstMedia) {
+        if (firstMedia.mediaContentType === "VIDEO" && "sources" in firstMedia) {
+          // It's a video
+          const videoSource = firstMedia.sources?.[0];
+          if (videoSource) {
+            mediaUrl = videoSource.url;
+            mediaType = "video";
+            mimeType = videoSource.mimeType || "video/mp4";
+          }
+        } else if (firstMedia.mediaContentType === "IMAGE" && "image" in firstMedia) {
+          // It's an image
+          mediaUrl = firstMedia.image?.url || "";
+          mediaType = "image";
+        }
+      }
+    }
+    
+    // Fallback to variant image or featured image if no media found
+    if (!mediaUrl) {
+      mediaUrl = node.merchandise.image?.url || product.featuredImage?.url || "";
+      mediaType = "image";
+    }
+
+    return {
+      lineId: node.id,
+      quantity: node.quantity,
+      variantId: node.merchandise.id,
+      variantTitle: node.merchandise.title,
+      productId: product.id,
+      productTitle: product.title,
+      productHandle: product.handle,
+      productType: product.productType,
+      description: product.description,
+      descriptionHtml: product.descriptionHtml,
+      price: parseFloat(node.merchandise.price.amount),
+      currencyCode: node.merchandise.price.currencyCode,
+      image: mediaUrl,
+      imageAlt: node.merchandise.image?.altText || product.featuredImage?.altText || "",
+      mediaType,
+      mimeType,
+    };
+  });
 
   return {
     id: cart.id,

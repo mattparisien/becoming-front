@@ -66,7 +66,7 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       fullWidth
       disabled={isLoading}
     >
-      {isLoading ? '...' : isAdded ? t.addedSuccessfully : t.addToCart}
+      {isLoading ? 'Adding...' : isAdded ? t.addedSuccessfully : t.addToCart}
     </Button>
   );
 };

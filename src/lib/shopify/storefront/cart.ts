@@ -155,6 +155,29 @@ const GET_CART_QUERY = `
 `;
 
 // Types
+interface MediaImage {
+  image: {
+    url: string;
+    altText?: string;
+  };
+  mediaContentType: 'IMAGE';
+}
+
+interface MediaVideo {
+  sources: Array<{
+    url: string;
+    mimeType: string;
+  }>;
+  mediaContentType: 'VIDEO';
+}
+
+interface MediaExternalVideo {
+  embedUrl: string;
+  mediaContentType: 'EXTERNAL_VIDEO';
+}
+
+type ProductMedia = MediaImage | MediaVideo | MediaExternalVideo;
+
 export interface ShopifyCartLine {
   id: string;
   quantity: number;
@@ -179,6 +202,9 @@ export interface ShopifyCartLine {
       featuredImage?: {
         url: string;
         altText?: string;
+      };
+      media?: {
+        edges: Array<{ node: ProductMedia }>;
       };
     };
   };
