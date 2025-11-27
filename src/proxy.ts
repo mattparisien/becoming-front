@@ -32,10 +32,19 @@ async function getLocale(request: NextRequest): Promise<Locale> {
         request.headers.forEach((value, key) => {
             headersObject[key] = value;
         });
+        
         const languages = new Negotiator({ headers: headersObject }).languages();
+        
+        // If no languages detected (e.g., crawler without Accept-Language), use default
+        if (!languages || languages.length === 0 || languages[0] === '*') {
+            return defaultLocale;
+        }
         
         // Filter out invalid language tags before passing to match
         const validLanguages = languages.filter((lang) => {
+            // Skip wildcards
+            if (lang === '*') return false;
+            
             try {
                 // Test if this is a valid locale by trying to canonicalize it
                 Intl.getCanonicalLocales(lang);
