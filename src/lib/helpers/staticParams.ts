@@ -161,8 +161,8 @@ export async function getUniqueProductHandles(): Promise<string[]> {
             variables: {
                 first: 250, // Fetch up to 250 products (adjust as needed)
                 query: '',
-                language: 'EN',
-                country: 'CA',
+                language: toShopifyLanguage('en'),
+                country: toShopifyCountry('ca'),
             },
         });
 
