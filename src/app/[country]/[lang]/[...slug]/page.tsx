@@ -20,6 +20,8 @@ export async function generateMetadata(
     const { country, lang, slug } = await params;
     const parentMeta = await parent;
 
+    console.log('generateMetadata called with:', { country, lang, slug });
+
     return generateRouteMetadata({ country, lang, slug, type: "page" }, parentMeta);
 }
 
