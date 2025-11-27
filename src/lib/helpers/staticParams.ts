@@ -123,3 +123,56 @@ export async function getAllProductParams(): Promise<ProductParams[]> {
         return [];
     }
 }
+
+/**
+ * @summary Fetch unique page slugs for sitemap (without country/locale duplication)
+ * @description More efficient than getAllPageParams for sitemap generation
+ * @returns Array of unique page slugs
+ */
+export async function getUniqueSlugs(): Promise<string[]> {
+    try {
+        // Fetch all page slugs from Sanity (with their language)
+        const pages = await fetchSanityData<Array<{ slug: string, language: string }>>(GET_ALL_PAGE_SLUGS_QUERY);
+
+        if (!pages || pages.length === 0) {
+            return [];
+        }
+
+        // Extract unique slugs (deduplicate across languages)
+        const uniqueSlugs = Array.from(new Set(pages.map(page => page.slug)));
+        
+        return uniqueSlugs;
+    } catch (error) {
+        console.error('Error fetching unique slugs:', error);
+        return [];
+    }
+}
+
+/**
+ * @summary Fetch unique product handles for sitemap (without country/locale duplication)
+ * @description More efficient than getAllProductParams for sitemap generation
+ * @returns Array of unique product handles
+ */
+export async function getUniqueProductHandles(): Promise<string[]> {
+    try {
+        // Fetch products from Shopify (just one market is enough since handles are the same)
+        const productsData = await shopifyStorefrontFetch<ShopifyProductsResponse>({
+            query: GET_PRODUCTS_QUERY,
+            variables: {
+                first: 250, // Fetch up to 250 products (adjust as needed)
+                query: '',
+                language: 'EN',
+                country: 'CA',
+            },
+        });
+
+        // Extract unique product handles
+        const handles = productsData.products.edges.map(edge => edge.node.handle);
+        
+        return handles;
+    } catch (error) {
+        console.error('Error fetching unique product handles:', error);
+        return [];
+    }
+}
+
