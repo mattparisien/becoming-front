@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useCartStore } from '@/store/cartStore';
 
 interface CartStoreInitializerProps {
   initialCartCount: number;
@@ -19,9 +20,9 @@ export function CartStoreInitializer({ initialCartCount }: CartStoreInitializerP
     if (initialized.current) return;
     initialized.current = true;
 
-    // The store will automatically load from cookies via persist middleware
-    // This component just ensures hydration happens smoothly
-    // If you need to do anything special during initialization, add it here
+    useCartStore.getState().initializeCart().catch((error) => {
+      console.error('Cart initialization failed:', error);
+    });
   }, [initialCartCount]);
 
   return null; // This component doesn't render anything

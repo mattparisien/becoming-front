@@ -34,6 +34,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const [termsError, setTermsError] = useState('');
   const [showUrlHelp, setShowUrlHelp] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isMutating, setIsMutating] = useState(false);
 
   // Prevent hydration mismatch
   useEffect(() => {
@@ -98,6 +99,30 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
     setTermsError('');
   };
 
+  const handleRemoveCartItem = async (lineId: string) => {
+    if (isMutating) return;
+    setIsMutating(true);
+    try {
+      await removeItem(lineId);
+    } catch (error) {
+      console.error('Failed to remove cart item:', error);
+    } finally {
+      setIsMutating(false);
+    }
+  };
+
+  const handleUpdateCartQuantity = async (lineId: string, quantity: number) => {
+    if (isMutating) return;
+    setIsMutating(true);
+    try {
+      await updateQuantity(lineId, quantity);
+    } catch (error) {
+      console.error('Failed to update cart quantity:', error);
+    } finally {
+      setIsMutating(false);
+    }
+  };
+
   const handleContinueToCheckout = async () => {
     let hasError = false;
 
@@ -122,15 +147,15 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
     setIsCheckingOut(true);
 
     try {
-      // Extract plugin IDs from cart items (MongoDB ObjectIds)
-      const pluginIds = items.map(item => item.id);
+      // Extract product IDs from cart items
+      const productIds = items.map(item => item.productId);
 
       // Step 1: Create pending order in backend
       const pendingOrderResponse = await fetch('/api/orders/pending', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          shopifyProductIds: pluginIds,
+          shopifyProductIds: productIds,
           metadata: {
             internalUrl,
             agreedToPrivacy: agreedToTerms,
@@ -144,14 +169,8 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
         throw new Error(errorData.error || 'Failed to create pending order');
       }
 
-      const { customId } = await pendingOrderResponse.json();
-
-      // Step 2: Proceed to Shopify checkout with customId in metadata
-      await checkout({
-        internalUrl,
-        agreedToPrivacy: agreedToTerms,
-        customId, // Include customId for webhook processing
-      });
+      // Step 2: Proceed to Shopify checkout (use the checkout URL from Shopify cart)
+      checkout();
     } catch (error) {
       console.error('Checkout preparation error:', error);
       alert(error instanceof Error ? error.message : 'Failed to prepare checkout. Please try again.');
@@ -236,32 +255,21 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {items.map((item, idx) => (
+                  {items.map((item) => (
                     <div
-                      key={idx}
+                      key={item.lineId}
                       className="flex gap-4 p-4 bg-foreground/5 rounded-xl"
                     >
-                      {/* Item Image/Video */}
+                      {/* Item Image */}
                       <div className="w-24 h-24 rounded-lg overflow-hidden bg-foreground/10 flex-shrink-0">
                         {item.image ? (
-                          item.mediaType === 'video' ? (
-                            <video
-                              src={item.image}
-                              className="w-full h-full object-cover"
-                              autoPlay
-                              loop
-                              muted
-                              playsInline
-                            />
-                          ) : (
-                            <Image
-                              src={item.image}
-                              alt={item.name}
-                              width={96}
-                              height={96}
-                              className="w-full h-full object-cover"
-                            />
-                          )
+                          <Image
+                            src={item.image}
+                            alt={item.productTitle}
+                            width={96}
+                            height={96}
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-foreground/30">
                             {t.noImage}
@@ -273,7 +281,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                       <div className="flex-1 min-w-0 flex flex-col justify-between">
                         <div className='flex items-start justify-between text-md'>
 
-                          <h3 className="mb-2 truncate text-foreground">{item.name}</h3>
+                          <h3 className="mb-2 truncate text-foreground">{item.productTitle}</h3>
                           <span className="text-foreground">
                             ${item.price.toFixed(2)}
                           </span>
@@ -286,7 +294,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                             <button
                               onClick={() => {
                                 if (item.quantity > 1) {
-                                  updateQuantity(item.id, item.quantity - 1);
+                                  void handleUpdateCartQuantity(item.lineId, item.quantity - 1);
                                 }
                               }}
                               disabled={item.quantity <= 1}
@@ -299,7 +307,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                               {item.quantity}
                             </span>
                             <button
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              onClick={() => void handleUpdateCartQuantity(item.lineId, item.quantity + 1)}
                               className="leading-[1.1] cursor-pointer text-foreground hover:text-foreground transition-colors text-lg"
                               aria-label={t.increaseQuantity}
                             >
@@ -307,7 +315,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                             </button>
                           </div>
                           <button
-                            onClick={() => removeItem(item.id)}
+                            onClick={() => void handleRemoveCartItem(item.lineId)}
                             className="text-foreground cursor-pointer font-sans text-sm text-fg transition-colors underline"
                           >
                             {t.remove}
