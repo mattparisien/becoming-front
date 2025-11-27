@@ -36,30 +36,11 @@ export const generateRouteMetadata = async (
     const globalTitle = parentMeta.title?.absolute;
     const globalOG = parentMeta.openGraph || {};
 
-    
-
     // Fetch SEO data from Sanity
     const data = await fetchSanityData<SeoData | null>(
         SEO_QUERY,
         { params: { language: lang, slug: slugString, type: params.type } }
     );
-
-
-    // If no SEO data, return parent metadata
-    if (!data?.seo) {
-        return {
-            ...(globalTitle && typeof globalTitle === 'string' ? { title: globalTitle } : {}),
-            ...(globalDescription ? { description: globalDescription } : {}),
-            openGraph: globalOG
-        };
-    }
-
-    const { title, description, excludeFromSearchResults } = data.seo;
-    const hasPageTitle = typeof title === 'string' && title.trim().length > 0;
-    const hasPageDescription = typeof description === 'string' && description.trim().length > 0;
-    
-    // Use page title if available, otherwise fall back to global title
-    const finalTitle = hasPageTitle ? title : globalTitle;
 
     // Get i18n configuration
     const [countryLocaleMap] = await Promise.all([
@@ -70,8 +51,8 @@ export const generateRouteMetadata = async (
     const siteUrl = process.env.SITE_URL || 'http://localhost:3000';
     const baseUrl = siteUrl.replace(/\/$/, ''); // Remove trailing slash
 
-    // Generate canonical URL (points to default country/locale)
-    const canonicalUrl = `${baseUrl}/${country}/${lang}/${slugString}`;
+    // Generate canonical URL (without locale/country - the preferred single version)
+    const canonicalUrl = `${baseUrl}/${slugString}`;
 
     // Generate language alternates
     const languageAlternates: Record<string, string> = {};
@@ -86,6 +67,28 @@ export const generateRouteMetadata = async (
 
     // Add x-default alternate (points to default)
     languageAlternates['x-default'] = canonicalUrl;
+
+    console.log('Generated alternates:', { canonical: canonicalUrl, languages: Object.keys(languageAlternates) });
+
+    // If no SEO data, return parent metadata with canonical
+    if (!data?.seo) {
+        return {
+            ...(globalTitle && typeof globalTitle === 'string' ? { title: globalTitle } : {}),
+            ...(globalDescription ? { description: globalDescription } : {}),
+            openGraph: globalOG,
+            alternates: {
+                canonical: canonicalUrl,
+                languages: languageAlternates,
+            }
+        };
+    }
+
+    const { title, description, excludeFromSearchResults } = data.seo;
+    const hasPageTitle = typeof title === 'string' && title.trim().length > 0;
+    const hasPageDescription = typeof description === 'string' && description.trim().length > 0;
+    
+    // Use page title if available, otherwise fall back to global title
+    const finalTitle = hasPageTitle ? title : globalTitle;
 
     return {
         ...(finalTitle ? { title: finalTitle } : {}),
