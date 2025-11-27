@@ -50,8 +50,8 @@ export async function generateMetadata(
   const siteUrl = process.env.SITE_URL || 'http://localhost:3000';
   const baseUrl = siteUrl.replace(/\/$/, ''); // Remove trailing slash
 
-  // Generate canonical URL (points to default country/locale)
-  const canonicalUrl = `${baseUrl}/${country}/${lang}/products/${slug}`;
+  // Generate canonical URL (without locale/country)
+  const canonicalUrl = `${baseUrl}/products/${slug}`;
 
   // Generate language alternates
   const languageAlternates: Record<string, string> = {};
