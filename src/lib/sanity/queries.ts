@@ -256,7 +256,10 @@ export const GET_ALL_PAGES_QUERY = `*[_type == "page" && isActive == true]{
   }
 }`;
 
-export const GET_ALL_PAGE_SLUGS_QUERY = `*[_type == "page" && isActive == true && seo.excludeFromSearchResults == false]{ "slug": slug.current, "language": language }`;
+export const GET_ALL_PAGE_SLUGS_QUERY = `*[_type == "page" && isActive == true && (!defined(seo.excludeFromSearchResults) || seo.excludeFromSearchResults == false)]{
+  "slug": slug.current,
+  "language": language
+}`;
 
 export const EXCLUDED_SLUGS_QUERY = `*[_type == "page" && seo.excludeFromSearchResults == true)]{ 
   _type == "demo" => {

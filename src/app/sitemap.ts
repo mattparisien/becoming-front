@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { getAllPageParams, getAllProductParams } from '@/lib/helpers/staticParams';
+import { getUniqueSlugs, getUniqueProductHandles } from '@/lib/helpers/staticParams';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.SITE_URL || 'http://localhost:3000';
@@ -14,37 +14,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     });
 
-    // Get all pages and add unique slugs (canonical URLs without locale/country)
-    const pages = await getAllPageParams();
-    const uniquePageSlugs = new Set<string>();
+    // Get unique page slugs (without country/locale duplication)
+    const pageSlugs = await getUniqueSlugs();
     
-    for (const page of pages) {
-      const slug = page.slug.join('/');
-      if (!uniquePageSlugs.has(slug)) {
-        uniquePageSlugs.add(slug);
-        sitemapEntries.push({
-          url: `${baseUrl}/${slug}`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly',
-          priority: 0.8,
-        });
-      }
+    for (const slug of pageSlugs) {
+      sitemapEntries.push({
+        url: `${baseUrl}/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.8,
+      });
     }
 
-    // Get all products and add unique handles (canonical URLs without locale/country)
-    const products = await getAllProductParams();
-    const uniqueProductSlugs = new Set<string>();
+    // Get unique product handles (without country/locale duplication)
+    const productHandles = await getUniqueProductHandles();
     
-    for (const product of products) {
-      if (!uniqueProductSlugs.has(product.slug)) {
-        uniqueProductSlugs.add(product.slug);
-        sitemapEntries.push({
-          url: `${baseUrl}/products/${product.slug}`,
-          lastModified: new Date(),
-          changeFrequency: 'daily',
-          priority: 0.7,
-        });
-      }
+    for (const handle of productHandles) {
+      sitemapEntries.push({
+        url: `${baseUrl}/products/${handle}`,
+        lastModified: new Date(),
+        changeFrequency: 'daily',
+        priority: 0.7,
+      });
     }
 
     return sitemapEntries;
