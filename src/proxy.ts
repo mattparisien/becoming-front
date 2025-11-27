@@ -27,14 +27,37 @@ async function getLocale(request: NextRequest): Promise<Locale> {
     }
 
     // Fallback to Accept-Language header
-    const headersObject: Record<string, string> = {};
-    request.headers.forEach((value, key) => {
-        headersObject[key] = value;
-    });
-    const languages = new Negotiator({ headers: headersObject }).languages();
-    const upperLocales = locales.map((l: string) => l.toUpperCase());
-    const upperDefault = defaultLocale.toUpperCase();
-    return match(languages, upperLocales, upperDefault).toLowerCase() as Locale;
+    try {
+        const headersObject: Record<string, string> = {};
+        request.headers.forEach((value, key) => {
+            headersObject[key] = value;
+        });
+        const languages = new Negotiator({ headers: headersObject }).languages();
+        
+        // Filter out invalid language tags before passing to match
+        const validLanguages = languages.filter((lang) => {
+            try {
+                // Test if this is a valid locale by trying to canonicalize it
+                Intl.getCanonicalLocales(lang);
+                return true;
+            } catch {
+                return false;
+            }
+        });
+        
+        // If no valid languages found, use default
+        if (validLanguages.length === 0) {
+            return defaultLocale;
+        }
+        
+        const upperLocales = locales.map((l: string) => l.toUpperCase());
+        const upperDefault = defaultLocale.toUpperCase();
+        return match(validLanguages, upperLocales, upperDefault).toLowerCase() as Locale;
+    } catch (error) {
+        // If locale matching fails, return default locale
+        console.error('Locale matching error:', error);
+        return defaultLocale;
+    }
 }
 
 // Get the preferred country from cookie or use default
