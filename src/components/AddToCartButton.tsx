@@ -23,57 +23,39 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
   const t = getProductPageTranslations(lang as Locale);
 
   const [isAdded, setIsAdded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
   const { open: openCartDrawer } = useCartDrawer();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleAddToCart = () => {
-    // Handle both flattened and non-flattened product structures
+  const handleAddToCart = async () => {
+    // Get the first variant ID (Shopify variant GID)
     const firstVariant = isFlattened(product)
       ? product.variants[0]
       : product.variants.edges[0]?.node;
 
-    const imageUrl = isFlattened(product)
-      ? product.media.src
-      : product.media.edges[0]?.node?.image?.url || '';
+    const variantId = firstVariant?.id;
 
-    const mediaType = isFlattened(product)
-      ? product.media.mediaType
-      : (product.media.edges[0]?.node?.image ? 'image' : 'video');
+    if (!variantId) {
+      console.error('No variant ID found for product');
+      return;
+    }
 
-    const mimeType = isFlattened(product)
-      ? product.media.mimeType
-      : product.media.edges[0]?.node?.sources?.[0]?.mimeType;
+    setIsLoading(true);
 
-    const price = parseFloat(product.priceRange.maxVariantPrice.amount);
+    try {
+      await addItem(variantId);
+      setIsAdded(true);
+      openCartDrawer();
 
-    // Convert Shopify product to cart item format
-    const cartItem = {
-      id: product.id,
-      gid: product.id,
-      variantId: firstVariant?.id || '',
-      variantGid: firstVariant?.id || '',
-      name: product.title,
-      description: product.descriptionHtml,
-      price: price,
-      image: imageUrl,
-      mediaType: mediaType as 'image' | 'video',
-      mimeType: mimeType,
-      category: product.productType || '',
-      featured: false,
-      size: 'medium' as const
-    };
-
-    addItem(cartItem);
-    setIsAdded(true);
-
-    // Open the cart drawer
-    openCartDrawer();
-
-    // Reset the success message after 2 seconds
-    setTimeout(() => {
-      setIsAdded(false);
-    }, 2000);
+      setTimeout(() => {
+        setIsAdded(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Failed to add item to cart:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -82,8 +64,9 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       onClick={handleAddToCart}
       size="lg"
       fullWidth
+      disabled={isLoading}
     >
-      {isAdded ? t.addedSuccessfully : t.addToCart}
+      {isLoading ? 'Adding...' : isAdded ? t.addedSuccessfully : t.addToCart}
     </Button>
   );
 };

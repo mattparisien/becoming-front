@@ -12,5 +12,6 @@ export interface Plugin {
   category: string;
   featured: boolean;
   size: "small" | "medium" | "large";
+  shopifyProductId: string; // Shopify product GID for backend
   shopifyVariantId?: string; // Shopify variant ID for checkout
 }

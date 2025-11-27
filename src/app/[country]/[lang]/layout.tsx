@@ -12,7 +12,7 @@ import { LocationModalProvider } from "@/context/LocationModalContext";
 import { MenuProvider } from "@/context/MenuContext";
 import { PageTransitionProvider } from "@/context/PageTransitionContext";
 import { ThemeProvider } from "@/context/ThemeContext";
-import { getServerCartItemCount } from "@/lib/cart/server";
+import { getServerCart } from "@/lib/cart/server";
 import { PAGE_TRANSITION_EASE, PAGE_TRANSITION_IN_DURATION, PAGE_TRANSITION_OUT_DURATION, PAGE_TRANSITION_PAUSE_DURATION } from "@/lib/constants";
 import { getGlobalData } from "@/lib/fetchers/globals";
 import { getLocales, getLocalesForCountry, type Locale } from "@/lib/i18n/config";
@@ -205,8 +205,8 @@ export default async function LocaleLayout({
   const contactEmail = globalData?.contactEmail || '';
   const markets = globalData?.markets || [];
 
-  // Get server-side cart count to prevent flash
-  const serverCartCount = await getServerCartItemCount();
+  // Get server-side cart data to hydrate client store
+  const serverCart = await getServerCart();
 
   return (
     <>
@@ -232,8 +232,8 @@ export default async function LocaleLayout({
             <MenuProvider>
               <LocationModalProvider>
                 <CartDrawerProvider>
-                  <CartStoreInitializer initialCartCount={serverCartCount} />
-                  <Header title={brand.title} countryCode={country.toUpperCase()} initialCartCount={serverCartCount} />
+                  <CartStoreInitializer initialCart={serverCart} />
+                  <Header title={brand.title} countryCode={country.toUpperCase()} initialCartCount={serverCart.totalQuantity} />
                   <MenuWrapper items={menuLinks} countryCode={country.toUpperCase()} />
                   <IntroWrapper />
                   <Main>

@@ -1,28 +1,46 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { useCartStore, type CartItem } from '@/store/cartStore';
+
+interface ServerCartData {
+  id: string | null;
+  checkoutUrl: string | null;
+  items: CartItem[];
+  totalQuantity: number;
+  cost: {
+    total: number;
+    subtotal: number;
+    currencyCode: string;
+  } | null;
+}
 
 interface CartStoreInitializerProps {
-  initialCartCount: number;
+  initialCart: ServerCartData;
 }
 
 /**
- * Initializes the cart store with server-side data
+ * Hydrates the cart store with server-fetched data
  * This ensures the store state matches what was rendered on the server
- * Prevents hydration mismatches and flashing of cart count
+ * No client-side fetch needed - prevents flash/glitch on page load
  */
-export function CartStoreInitializer({ initialCartCount }: CartStoreInitializerProps) {
+export function CartStoreInitializer({ initialCart }: CartStoreInitializerProps) {
   const initialized = useRef(false);
 
-  useEffect(() => {
-    // Only run once on mount
-    if (initialized.current) return;
+  // Hydrate store synchronously on first render (before effects run)
+  if (!initialized.current) {
     initialized.current = true;
+    useCartStore.setState({
+      cartId: initialCart.id,
+      checkoutUrl: initialCart.checkoutUrl,
+      items: initialCart.items,
+      totalQuantity: initialCart.totalQuantity,
+      cost: initialCart.cost,
+      isInitialized: true,
+      isLoading: false,
+      error: null,
+    });
+  }
 
-    // The store will automatically load from cookies via persist middleware
-    // This component just ensures hydration happens smoothly
-    // If you need to do anything special during initialization, add it here
-  }, [initialCartCount]);
-
-  return null; // This component doesn't render anything
+  return null;
 }

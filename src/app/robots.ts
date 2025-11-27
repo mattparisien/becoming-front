@@ -7,12 +7,12 @@ export default async function robots() {
   const excludedSlugs = await fetchExcludedSlugs();
 
   // Remove duplicates using Set
-  const uniqueSlugs = [...new Set(excludedSlugs)];
 
   const disallow = [
     "/checkout",
     "/cart",
-    ...uniqueSlugs
+    "/demos",
+    "/installation-guides"
   ]
   return {
     rules: [
