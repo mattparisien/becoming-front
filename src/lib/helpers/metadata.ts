@@ -68,8 +68,6 @@ export const generateRouteMetadata = async (
     // Add x-default alternate (points to default)
     languageAlternates['x-default'] = canonicalUrl;
 
-    console.log('Generated alternates:', { canonical: canonicalUrl, languages: Object.keys(languageAlternates) });
-
     // If no SEO data, return parent metadata with canonical
     if (!data?.seo) {
         return {
