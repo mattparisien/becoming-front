@@ -17,6 +17,8 @@ export async function POST(request: NextRequest) {
         const apiKey = process.env.BECOMING_API_KEY;
         const apiUrl = process.env.PLUGIN_API_URL;
 
+        console.log('password:', password)
+
         if (!apiKey || !apiUrl) {
             console.error('Missing BECOMING_API_KEY or PLUGIN_API_URL environment variables');
             return NextResponse.json(
