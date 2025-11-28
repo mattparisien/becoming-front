@@ -141,17 +141,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     //   ],
     //   apple: globalData.seo?.favicons?.favicon180 ? [{ url: globalData.seo.favicons.favicon180, sizes: '180x180', type: 'image/png' }] : undefined,
     // },
-    openGraph: {
-      title: globalData.seo.title,
-      description: globalData.seo.description || globalData.seo.title,
-      images: globalData.seo.ogImage ? [globalData.seo.ogImage] : [],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: globalData.seo.title,
-      description: globalData.seo.description || globalData.seo.title,
-      images: globalData.seo.twitterImage ? [globalData.seo.twitterImage.url] : [],
-    },
+    // openGraph: {
+    //   title: globalData.seo.title,
+    //   description: globalData.seo.description || globalData.seo.title,
+    //   images: globalData.seo.ogImage ? [globalData.seo.ogImage] : [],
+    // },
+    // twitter: {
+    //   card: 'summary_large_image',
+    //   title: globalData.seo.title,
+    //   description: globalData.seo.description || globalData.seo.title,
+    //   images: globalData.seo.twitterImage ? [globalData.seo.twitterImage.url] : [],
+    // },
 
   };
 }
