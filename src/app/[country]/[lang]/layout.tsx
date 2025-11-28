@@ -131,16 +131,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: globalData.seo.title,
     description: globalData.seo.description || globalData.seo.title,
     metadataBase: new URL(process.env.SITE_URL || 'http://localhost:3000'),
-    icons: {
-      icon: [
-        ...(globalData.seo?.favicons?.favicon16 ? [{ url: globalData.seo.favicons.favicon16, sizes: '16x16', type: 'image/png' }] : []),
-        ...(globalData.seo?.favicons?.favicon32 ? [{ url: globalData.seo.favicons.favicon32, sizes: '32x32', type: 'image/png' }] : []),
-        ...(globalData.seo?.favicons?.favicon96 ? [{ url: globalData.seo.favicons.favicon96, sizes: '96x96', type: 'image/png' }] : []),
-        ...(globalData.seo?.favicons?.favicon192 ? [{ url: globalData.seo.favicons.favicon192, sizes: '192x192', type: 'image/png' }] : []),
-        ...(globalData.seo?.favicons?.favicon512 ? [{ url: globalData.seo.favicons.favicon512, sizes: '512x512', type: 'image/png' }] : []),
-      ],
-      apple: globalData.seo?.favicons?.favicon180 ? [{ url: globalData.seo.favicons.favicon180, sizes: '180x180', type: 'image/png' }] : undefined,
-    },
+    // icons: {
+    //   icon: [
+    //     ...(globalData.seo?.favicons?.favicon16 ? [{ url: globalData.seo.favicons.favicon16, sizes: '16x16', type: 'image/png' }] : []),
+    //     ...(globalData.seo?.favicons?.favicon32 ? [{ url: globalData.seo.favicons.favicon32, sizes: '32x32', type: 'image/png' }] : []),
+    //     ...(globalData.seo?.favicons?.favicon96 ? [{ url: globalData.seo.favicons.favicon96, sizes: '96x96', type: 'image/png' }] : []),
+    //     ...(globalData.seo?.favicons?.favicon192 ? [{ url: globalData.seo.favicons.favicon192, sizes: '192x192', type: 'image/png' }] : []),
+    //     ...(globalData.seo?.favicons?.favicon512 ? [{ url: globalData.seo.favicons.favicon512, sizes: '512x512', type: 'image/png' }] : []),
+    //   ],
+    //   apple: globalData.seo?.favicons?.favicon180 ? [{ url: globalData.seo.favicons.favicon180, sizes: '180x180', type: 'image/png' }] : undefined,
+    // },
     openGraph: {
       title: globalData.seo.title,
       description: globalData.seo.description || globalData.seo.title,
