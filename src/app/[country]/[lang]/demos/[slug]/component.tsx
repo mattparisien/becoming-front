@@ -18,9 +18,12 @@ const demoComponentRegistry: { [key: string]: React.ComponentType<DemoComponentP
     'magnetic-button': dynamic(() => import('@/components/demos/MagneticButton')),
     'shuffled-text-link': dynamic(() => import('@/components/demos/ShuffledTextLink')),
     'mouse-follower': dynamic(() => import('@/components/demos/MouseFollower')),
+    'super-podcast-player': dynamic(() => import('@/components/demos/SuperPodcastPlayer')),
 };
 
 export default function DemoComponentManager({ title, slug, pluginJSON }: DemoComponentManagerProps) {
+    
+
     const shouldShowWarning = useMemo(() => {
         if (!pluginJSON || typeof window === 'undefined') return false;
         
@@ -31,9 +34,12 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
 
     const [showMobileWarning, setShowMobileWarning] = useState<boolean>(shouldShowWarning);
 
+    
+    
+
     if (!pluginJSON) return notFound();
 
-    const { targets } = JSON.parse(pluginJSON);
+    const { targets, parameters } = JSON.parse(pluginJSON);
 
     const DemoComponent = demoComponentRegistry[slug];
 
@@ -42,9 +48,20 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
         condition?: boolean;
     };
 
+    
+
     const className = targets?.filter((target: Target) => target.selector.startsWith(".") && !target.condition).map((target: Target) => target.selector.replace(".", "")).join(' ') || '';
+    
+    // Parse data attributes from selectors like [data-plugin] into an object
+    const dataAttrs = targets?.filter((target: Target) => target.selector.startsWith("[") && !target.condition).reduce((acc: Record<string, string>, target: Target) => {
+        // Extract attribute name from selector like "[data-plugin]" -> "data-plugin"
+        const attrName = target.selector.replace(/^\[|\]$/g, '');
+        acc[attrName] = 'true';
+        return acc;
+    }, {}) || {};
 
     const isComponentNeeded = true;
+
 
 
     if (!DemoComponent && isComponentNeeded) return notFound();
@@ -78,7 +95,7 @@ export default function DemoComponentManager({ title, slug, pluginJSON }: DemoCo
             <link rel="stylesheet" href={`${process.env.NEXT_PUBLIC_PLUGIN_BUNDLE_URL}/${slug}/assets/styles/main.css`} />
             <Container className="w-full py-5">
                 <div className="w-full h-[calc(var(--screen-minus-header-height)-theme(space.20))] rounded-xl overflow-hidden">
-                    {isComponentNeeded && <DemoComponent className={className} title={title} />}
+                    {isComponentNeeded && <DemoComponent className={className} title={title} {...dataAttrs} />}
                 </div>
             </Container>
         </section>
