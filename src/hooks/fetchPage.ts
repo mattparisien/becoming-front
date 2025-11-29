@@ -2,7 +2,9 @@ import { fetchSanityData } from './useServerSideSanityQuery';
 import { EXCLUDED_SLUGS_QUERY, PAGE_QUERY } from '@/lib/sanity/queries';
 import { SanityPage, SanityModule } from '@/lib/types/sanity';
 import { shopifyStorefrontFetch } from '@/lib/shopify/storefront/client';
+import { shopifyAdminRequest } from '@/lib/shopify/admin';
 import { GET_PRODUCTS_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_COLLECTION_BY_HANDLE_QUERY } from '@/lib/shopify/storefront/queries';
+import { GET_PRODUCTS_ADMIN_QUERY } from '@/lib/shopify/admin/queries';
 import { ShopifyProduct, ShopifyProductFlattened, ShopifyProductsResponse } from '@/lib/types/shopify';
 import { unstable_cache } from "next/cache";
 import { flattenMedia } from '@/lib/helpers/flattenMedia';
@@ -66,32 +68,61 @@ async function _fetchPage(options: FetchPageOptions): Promise<SanityPage | null>
             switch (moduleWithShopify.shopifyFetchCollectionKey) {
               case 'product':
               case 'products':
-                // Fetch products from Shopify, sorted by published date (newest first)
-                const productsData = await shopifyStorefrontFetch<ShopifyProductsResponse>({
-                  query: GET_PRODUCTS_QUERY,
-                  variables: {
-                    first: 20,
-                    query: '', // Fetch all products, or add specific query
-                    language: shopifyLanguage, // Pass language as GraphQL variable
-                    country: shopifyCountry,
-                  },
-                });
-
-                console.log('productsData', productsData);
+                // In development, use Admin API to fetch drafts; in production use Storefront API
+                if (process.env.NODE_ENV === 'development') {
+                  const adminData = await shopifyAdminRequest<{ products: ShopifyProductsResponse['products'] }>({
+                    query: GET_PRODUCTS_ADMIN_QUERY,
+                    variables: {
+                      first: 20,
+                      query: '',
+                    },
+                  });
 
 
-                // Flatten the products structure and remove edges/nodes
-                // Add collection handle (page slug) to products for URL generation
-                products = productsData.products.edges.map((edge) => {
-                  const product = edge.node;
-                  
-                  return {
-                    ...product,
-                    collectionHandle: 'products',
-                    media: flattenMedia(product.media.edges),
-                    variants: product.variants.edges.map((variantEdge) => variantEdge.node),
-                  };
-                });
+                  // Transform Admin API response to match Storefront API structure
+                  products = adminData.products.edges.map((edge) => {
+                    const product = edge.node as any;
+                    return {
+                      ...product,
+                      collectionHandle: 'products',
+                      media: flattenMedia(product.media.edges),
+                      variants: product.variants.edges.map((variantEdge: any) => ({
+                        ...variantEdge.node,
+                        priceV2: {
+                          amount: variantEdge.node.price,
+                          currencyCode: product.priceRangeV2?.maxVariantPrice?.currencyCode || 'USD',
+                        },
+                      })),
+                      priceRange: {
+                        minVariantPrice: product.priceRangeV2?.minVariantPrice || { amount: '0', currencyCode: 'USD' },
+                        maxVariantPrice: product.priceRangeV2?.maxVariantPrice || { amount: '0', currencyCode: 'USD' },
+                      },
+                    };
+                  });
+                  console.log('Admin API productsss', products);
+                } else {
+                  // Production: use Storefront API (published products only)
+                  const productsData = await shopifyStorefrontFetch<ShopifyProductsResponse>({
+                    query: GET_PRODUCTS_QUERY,
+                    variables: {
+                      first: 20,
+                      query: '',
+                      language: shopifyLanguage,
+                      country: shopifyCountry,
+                    },
+                  });
+
+                  products = productsData.products.edges.map((edge) => {
+                    const product = edge.node;
+                    
+                    return {
+                      ...product,
+                      collectionHandle: 'products',
+                      media: flattenMedia(product.media.edges),
+                      variants: product.variants.edges.map((variantEdge) => variantEdge.node),
+                    };
+                  });
+                }
                 break;
 
               // Add more cases for different collection types

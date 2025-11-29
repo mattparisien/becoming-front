@@ -40,7 +40,8 @@ export async function getProduct(params: ProductParams): Promise<ProductWithAddi
         const sanityProduct = await fetchSanityData<SanityProductData>(PRODUCT_QUERY, {
             params: {
                 slug: slug,
-                language: lang
+                language: lang,
+                env: process.env.NODE_ENV || 'development',
             }
         });
 
