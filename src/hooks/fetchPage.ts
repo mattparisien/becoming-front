@@ -70,12 +70,14 @@ async function _fetchPage(options: FetchPageOptions): Promise<SanityPage | null>
                 const productsData = await shopifyStorefrontFetch<ShopifyProductsResponse>({
                   query: GET_PRODUCTS_QUERY,
                   variables: {
-                    first: 50,
+                    first: 20,
                     query: '', // Fetch all products, or add specific query
                     language: shopifyLanguage, // Pass language as GraphQL variable
                     country: shopifyCountry,
                   },
                 });
+
+                console.log('productsData', productsData);
 
 
                 // Flatten the products structure and remove edges/nodes
@@ -145,7 +147,10 @@ async function _fetchPage(options: FetchPageOptions): Promise<SanityPage | null>
 export const fetchPage = unstable_cache(
   _fetchPage,
   ['page-data'],
-  { revalidate: 3600, tags: ['page'] }
+  { 
+    revalidate: process.env.NODE_ENV === 'development' ? false : 3600, 
+    tags: ['page'] 
+  }
 );
 
 async function _fetchExcludedPageSlugs(): Promise<string[]> {
@@ -183,7 +188,7 @@ async function _fetchShopifyCollection(
   try {
     // Convert language to Shopify LanguageCode format if provided
     const shopifyLanguage = language ? language.toUpperCase() : undefined;
-
+console.log(collectionKey)
     const shopifyData = await shopifyStorefrontFetch<ShopifyProductsResponse>({
       query: GET_PRODUCTS_QUERY,
       variables: {

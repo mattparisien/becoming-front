@@ -48,6 +48,7 @@ const SHOPIFY_API_ENDPOINT = `https://${SHOPIFY_STORE_DOMAIN}/api/${API_VERSION}
       query,
       variables: variables || {},
     }),
+    cache: process.env.NODE_ENV === 'development' ? 'no-store' : 'default',
   });
 
   if (!response.ok) {
