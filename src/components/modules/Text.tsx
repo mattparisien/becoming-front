@@ -159,7 +159,7 @@ const TextModule = ({ content, contentMaxWidth, alignment = 'left', headingFont 
         listItem: {
             bullet: ({ children }) => (
                 <li className="flex gap-2">
-                    <span className="flex-shrink-0 translate-y-[0.15em]">•</span>
+                    <span className="flex-shrink-0">•</span>
                     <span className="flex-1">{children}</span>
                 </li>
             ),
