@@ -12,5 +12,6 @@ export const client = createClient({
     projectId: projectId || '',
     dataset: dataset || '',
     apiVersion, 
-    useCdn: true
+    useCdn: process.env.NODE_ENV === 'production',
+    perspective: 'drafts',
 })

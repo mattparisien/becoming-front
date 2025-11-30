@@ -32,7 +32,7 @@ const TextModule = ({ content, contentMaxWidth, alignment = 'left', headingFont 
             h2: ({ children }) => <h2 className={classNames("leading-[1.2] text-4xl sm:text-5xl xl:text-6xl mb-6 [&_a]:no-underline [&_a]:relative [&_a]:inline-block [&_a]:after:content-[''] [&_a]:after:absolute [&_a]:after:bottom-0 [&_a]:after:left-0 [&_a]:after:w-full [&_a]:after:h-[2px] [&_a]:after:bg-[length:10px_2px] [&_a]:after:bg-repeat-x [&_a]:after:bg-[linear-gradient(to_right,currentColor_0,currentColor_6px,transparent_6px,transparent_10px)] [&_a:hover]:after:animate-[dash-slide-steps_0.4s_steps(3)_infinite]", fontClass)}>{children}</h2>,
             h3: ({ children }) => <h3 className={classNames("text-2xl xl:text-3xl mb-3", fontClass)}>{children}</h3>,
             h4: ({ children }) => <h4 className={classNames("text-lg md:text-xl mb-4 mt-8", fontClass)}>{children}</h4>,
-            h5: ({ children }) => <h5 className={classNames("text-sm font-medium mb-4 mt-6", fontClass)}>{children}</h5>,
+            h5: ({ children }) => <h5 className={classNames("text-md font-medium mb-2 mt-8", fontClass)}>{children}</h5>,
             h6: ({ children }) => <h6 className={classNames("text-sm  mb-2 mt-6", fontClass)}>{children}</h6>,
             normal: ({ children }) => <p className="mb-3 leading-relaxed">{children}</p>,
             small: ({ children }) => <p className="text-sm mb-4 leading-relaxed">{children}</p>,
@@ -153,12 +153,19 @@ const TextModule = ({ content, contentMaxWidth, alignment = 'left', headingFont 
         },
         list: {
             bullet: ({ children }) => <ul className="mb-5 space-y-1">{children}</ul>,
-            number: ({ children }) => <ol className="list-decimal list-inside mb-5 space-y-2">{children}</ol>,
+            checkmark: ({ children }) => <ul className="mb-5 space-y-1">{children}</ul>,
+            number: ({ children }) => <ol className="mb-5 space-y-2">{children}</ol>,
         },
         listItem: {
             bullet: ({ children }) => (
-                <li className="flex items-start gap-2">
-                    <IoCheckmark className="mt-1 flex-shrink-0 w-3 h-3" />
+                <li className="flex gap-2">
+                    <span className="flex-shrink-0 translate-y-[0.15em]">•</span>
+                    <span className="flex-1">{children}</span>
+                </li>
+            ),
+            checkmark: ({ children }) => (
+                <li className="flex gap-2">
+                    <IoCheckmark className="flex-shrink-0 w-3 h-3 translate-y-[0.4em]" />
                     <span className="flex-1">{children}</span>
                 </li>
             ),

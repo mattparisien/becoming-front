@@ -3,6 +3,8 @@ import { PRODUCT_QUERY } from "../sanity/queries";
 import { fetchShopifyProduct } from "@/hooks/fetchPage";
 import { ShopifyProductFlattened } from "../types/shopify";
 import { PortableTextBlock } from "@portabletext/types";
+import{ client }from "@/lib/sanity/client";
+
 
 interface ProductParams {
     lang: string;
@@ -34,6 +36,7 @@ export async function getProduct(params: ProductParams): Promise<ProductWithAddi
         const { slug, country, lang } = params;
 
         if (!slug || !lang || !country) {
+            console.log('[getProduct] Missing required params');
             return null;
         }
 
@@ -45,11 +48,23 @@ export async function getProduct(params: ProductParams): Promise<ProductWithAddi
             }
         });
 
-        if (!sanityProduct) return null;
+console.log('cleint', client);
+        
+        console.log('[getProduct] Sanity product:', sanityProduct ? 'Found' : 'Not found');
+
+        if (!sanityProduct) {
+            console.log('[getProduct] No Sanity product found, returning null');
+            return null;
+        }
 
         const shopifyProduct = await fetchShopifyProduct(slug, lang, country);
 
-        if (!shopifyProduct) return null;
+        console.log('[getProduct] Shopify product:', shopifyProduct ? 'Found' : 'Not found');
+
+        if (!shopifyProduct) {
+            console.log('[getProduct] No Shopify product found, returning null');
+            return null;
+        }
 
         return {
             
@@ -58,7 +73,7 @@ export async function getProduct(params: ProductParams): Promise<ProductWithAddi
         };
 
     } catch (error) {
-        console.error('Error fetching product', error);
+        console.error('[getProduct] Error fetching product', error);
         return null;
     }
 }
