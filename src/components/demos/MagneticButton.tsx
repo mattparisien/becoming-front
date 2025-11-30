@@ -5,7 +5,9 @@ import classNames from "classnames";
 const MagneticButton = ({ title, className }: DemoComponentProps) => {
 
     return <div className="w-full h-full bg-accent flex items-center justify-center">
-        <div className={classNames(className)}>
+        <div className={classNames(className, {
+            "sqs-button-element--primary": true
+        })}>
             <Button size="lg" className={classNames("font-serif !text-4xl !font-normal")}>{title}</Button>
         </div>
     </div>
