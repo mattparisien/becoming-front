@@ -5,7 +5,7 @@ import { shopifyStorefrontFetch } from '@/lib/shopify/storefront/client';
 import { shopifyAdminRequest } from '@/lib/shopify/admin';
 import { GET_PRODUCTS_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_COLLECTION_BY_HANDLE_QUERY } from '@/lib/shopify/storefront/queries';
 import { GET_PRODUCTS_ADMIN_QUERY, GET_PRODUCT_BY_HANDLE_ADMIN_QUERY } from '@/lib/shopify/admin/queries';
-import { ShopifyProduct, ShopifyProductFlattened, ShopifyProductsResponse } from '@/lib/types/shopify';
+import { ShopifyProduct, ShopifyProductFlattened, ShopifyProductsResponse, ShopifyImage, ShopifySEO } from '@/lib/types/shopify';
 import { unstable_cache } from "next/cache";
 import { flattenMedia } from '@/lib/helpers/flattenMedia';
 
@@ -18,6 +18,53 @@ interface FetchPageOptions {
 interface ModuleWithShopify extends SanityModule {
   shopifyFetchCollectionKey?: string;
   products?: ShopifyProductFlattened[];
+}
+
+// Admin API types (use priceRangeV2 and different structure)
+interface AdminProductVariant {
+  id: string;
+  title: string;
+  price: string;
+  availableForSale: boolean;
+}
+
+interface AdminProduct {
+  id: string;
+  title: string;
+  handle: string;
+  description: string;
+  descriptionHtml: string;
+  productType: string;
+  tags: string[];
+  vendor: string;
+  status: string;
+  priceRangeV2: {
+    minVariantPrice: { amount: string; currencyCode: string };
+    maxVariantPrice: { amount: string; currencyCode: string };
+  };
+  seo: ShopifySEO;
+  media: {
+    edges: Array<{
+      node: {
+        image?: ShopifyImage;
+        sources?: Array<{ url: string; mimeType: string }>;
+        mediaContentType: string;
+      };
+    }>;
+  };
+  variants: {
+    edges: Array<{
+      node: AdminProductVariant;
+    }>;
+  };
+}
+
+interface AdminProductsResponse {
+  products: {
+    edges: Array<{
+      node: AdminProduct;
+    }>;
+  };
 }
 
 /**
@@ -70,7 +117,7 @@ async function _fetchPage(options: FetchPageOptions): Promise<SanityPage | null>
               case 'products':
                 // In development, use Admin API to fetch drafts; in production use Storefront API
                 if (process.env.NODE_ENV === 'development') {
-                  const adminData = await shopifyAdminRequest<{ products: ShopifyProductsResponse['products'] }>({
+                  const adminData = await shopifyAdminRequest<AdminProductsResponse>({
                     query: GET_PRODUCTS_ADMIN_QUERY,
                     variables: {
                       first: 20,
@@ -81,21 +128,26 @@ async function _fetchPage(options: FetchPageOptions): Promise<SanityPage | null>
 
                   // Transform Admin API response to match Storefront API structure
                   products = adminData.products.edges.map((edge) => {
-                    const product = edge.node as any;
+                    const product = edge.node;
                     return {
                       ...product,
                       collectionHandle: 'products',
-                      media: flattenMedia(product.media.edges),
-                      variants: product.variants.edges.map((variantEdge: any) => ({
+                      media: flattenMedia(product.media.edges.map(mediaEdge => ({
+                        node: {
+                          ...mediaEdge.node,
+                          mediaType: mediaEdge.node.mediaContentType,
+                        }
+                      }))),
+                      variants: product.variants.edges.map((variantEdge) => ({
                         ...variantEdge.node,
                         priceV2: {
                           amount: variantEdge.node.price,
-                          currencyCode: product.priceRangeV2?.maxVariantPrice?.currencyCode || 'USD',
+                          currencyCode: product.priceRangeV2.maxVariantPrice.currencyCode,
                         },
                       })),
                       priceRange: {
-                        minVariantPrice: product.priceRangeV2?.minVariantPrice || { amount: '0', currencyCode: 'USD' },
-                        maxVariantPrice: product.priceRangeV2?.maxVariantPrice || { amount: '0', currencyCode: 'USD' },
+                        minVariantPrice: product.priceRangeV2.minVariantPrice,
+                        maxVariantPrice: product.priceRangeV2.maxVariantPrice,
                       },
                     };
                   });
@@ -272,41 +324,7 @@ async function _fetchShopifyProduct(
     // In development, use Admin API to fetch drafts
     if (process.env.NODE_ENV === 'development') {
       const adminData = await shopifyAdminRequest<{
-        productByHandle: {
-          id: string;
-          title: string;
-          handle: string;
-          description: string;
-          descriptionHtml: string;
-          productType: string;
-          tags: string[];
-          vendor: string;
-          status: string;
-          priceRangeV2: {
-            minVariantPrice: { amount: string; currencyCode: string };
-            maxVariantPrice: { amount: string; currencyCode: string };
-          };
-          seo: { title: string; description: string };
-          media: {
-            edges: Array<{
-              node: {
-                image?: { url: string; altText: string };
-                sources?: Array<{ url: string; mimeType: string }>;
-                mediaContentType: string;
-              };
-            }>;
-          };
-          variants: {
-            edges: Array<{
-              node: {
-                id: string;
-                title: string;
-                price: string;
-                availableForSale: boolean;
-              };
-            }>;
-          };
-        } | null;
+        productByHandle: AdminProduct | null;
       }>({
         query: GET_PRODUCT_BY_HANDLE_ADMIN_QUERY,
         variables: { handle },
@@ -343,7 +361,12 @@ async function _fetchShopifyProduct(
             currencyCode: product.priceRangeV2.maxVariantPrice.currencyCode,
           },
         },
-        media: flattenMedia(product.media.edges),
+        media: flattenMedia(product.media.edges.map(mediaEdge => ({
+          node: {
+            ...mediaEdge.node,
+            mediaType: mediaEdge.node.mediaContentType,
+          }
+        }))),
         variants: product.variants.edges.map((variantEdge) => ({
           ...variantEdge.node,
           // Transform price to priceV2 for consistency
