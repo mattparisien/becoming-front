@@ -28,6 +28,7 @@ const ProductsModule = ({ products }: ProductsProps) => {
         }));
     }, [products]);
 
+
     if (!products || products.length === 0) {
         return <div>No products found</div>;
     }

@@ -6,6 +6,7 @@ interface PluginCardProps {
 }
 
 export default function PluginCard({ plugin }: PluginCardProps) {
+  
   const getHeightClass = () => {
     // Variable heights for mosaic effect
     const heights = {

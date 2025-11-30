@@ -2,8 +2,10 @@ import { fetchSanityData } from './useServerSideSanityQuery';
 import { EXCLUDED_SLUGS_QUERY, PAGE_QUERY } from '@/lib/sanity/queries';
 import { SanityPage, SanityModule } from '@/lib/types/sanity';
 import { shopifyStorefrontFetch } from '@/lib/shopify/storefront/client';
+import { shopifyAdminRequest } from '@/lib/shopify/admin';
 import { GET_PRODUCTS_QUERY, GET_PRODUCT_BY_HANDLE_QUERY, GET_COLLECTION_BY_HANDLE_QUERY } from '@/lib/shopify/storefront/queries';
-import { ShopifyProduct, ShopifyProductFlattened, ShopifyProductsResponse } from '@/lib/types/shopify';
+import { GET_PRODUCTS_ADMIN_QUERY, GET_PRODUCT_BY_HANDLE_ADMIN_QUERY } from '@/lib/shopify/admin/queries';
+import { ShopifyProduct, ShopifyProductFlattened, ShopifyProductsResponse, ShopifyImage, ShopifySEO } from '@/lib/types/shopify';
 import { unstable_cache } from "next/cache";
 import { flattenMedia } from '@/lib/helpers/flattenMedia';
 
@@ -16,6 +18,53 @@ interface FetchPageOptions {
 interface ModuleWithShopify extends SanityModule {
   shopifyFetchCollectionKey?: string;
   products?: ShopifyProductFlattened[];
+}
+
+// Admin API types (use priceRangeV2 and different structure)
+interface AdminProductVariant {
+  id: string;
+  title: string;
+  price: string;
+  availableForSale: boolean;
+}
+
+interface AdminProduct {
+  id: string;
+  title: string;
+  handle: string;
+  description: string;
+  descriptionHtml: string;
+  productType: string;
+  tags: string[];
+  vendor: string;
+  status: string;
+  priceRangeV2: {
+    minVariantPrice: { amount: string; currencyCode: string };
+    maxVariantPrice: { amount: string; currencyCode: string };
+  };
+  seo: ShopifySEO;
+  media: {
+    edges: Array<{
+      node: {
+        image?: ShopifyImage;
+        sources?: Array<{ url: string; mimeType: string }>;
+        mediaContentType: string;
+      };
+    }>;
+  };
+  variants: {
+    edges: Array<{
+      node: AdminProductVariant;
+    }>;
+  };
+}
+
+interface AdminProductsResponse {
+  products: {
+    edges: Array<{
+      node: AdminProduct;
+    }>;
+  };
 }
 
 /**
@@ -66,32 +115,66 @@ async function _fetchPage(options: FetchPageOptions): Promise<SanityPage | null>
             switch (moduleWithShopify.shopifyFetchCollectionKey) {
               case 'product':
               case 'products':
-                // Fetch products from Shopify, sorted by published date (newest first)
-                const productsData = await shopifyStorefrontFetch<ShopifyProductsResponse>({
-                  query: GET_PRODUCTS_QUERY,
-                  variables: {
-                    first: 20,
-                    query: '', // Fetch all products, or add specific query
-                    language: shopifyLanguage, // Pass language as GraphQL variable
-                    country: shopifyCountry,
-                  },
-                });
-
-                console.log('productsData', productsData);
+                // In development, use Admin API to fetch drafts; in production use Storefront API
+                if (process.env.NODE_ENV === 'development') {
+                  const adminData = await shopifyAdminRequest<AdminProductsResponse>({
+                    query: GET_PRODUCTS_ADMIN_QUERY,
+                    variables: {
+                      first: 20,
+                      query: '',
+                    },
+                  });
 
 
-                // Flatten the products structure and remove edges/nodes
-                // Add collection handle (page slug) to products for URL generation
-                products = productsData.products.edges.map((edge) => {
-                  const product = edge.node;
-                  
-                  return {
-                    ...product,
-                    collectionHandle: 'products',
-                    media: flattenMedia(product.media.edges),
-                    variants: product.variants.edges.map((variantEdge) => variantEdge.node),
-                  };
-                });
+                  // Transform Admin API response to match Storefront API structure
+                  products = adminData.products.edges.map((edge) => {
+                    const product = edge.node;
+                    return {
+                      ...product,
+                      collectionHandle: 'products',
+                      media: flattenMedia(product.media.edges.map(mediaEdge => ({
+                        node: {
+                          ...mediaEdge.node,
+                          mediaType: mediaEdge.node.mediaContentType,
+                        }
+                      }))),
+                      variants: product.variants.edges.map((variantEdge) => ({
+                        ...variantEdge.node,
+                        priceV2: {
+                          amount: variantEdge.node.price,
+                          currencyCode: product.priceRangeV2.maxVariantPrice.currencyCode,
+                        },
+                      })),
+                      priceRange: {
+                        minVariantPrice: product.priceRangeV2.minVariantPrice,
+                        maxVariantPrice: product.priceRangeV2.maxVariantPrice,
+                      },
+                    };
+                  });
+                  console.log('Admin API productsss', products);
+                } else {
+                  // Production: use Storefront API (published products only)
+                  const productsData = await shopifyStorefrontFetch<ShopifyProductsResponse>({
+                    query: GET_PRODUCTS_QUERY,
+                    variables: {
+                      first: 20,
+                      query: '',
+                      language: shopifyLanguage,
+                      country: shopifyCountry,
+                    },
+                  });
+
+                  products = productsData.products.edges.map((edge) => {
+                    const product = edge.node;
+                    
+                    return {
+                      ...product,
+                      collectionHandle: 'products',
+                      media: flattenMedia(product.media.edges),
+                      variants: product.variants.edges.map((variantEdge) => variantEdge.node),
+                    };
+                  });
+                }
                 break;
 
               // Add more cases for different collection types
@@ -236,7 +319,66 @@ async function _fetchShopifyProduct(
   country: string
 ): Promise<ShopifyProductFlattened | null> {
   try {
-    // Convert language to Shopify LanguageCode format if provided
+    console.log(`[fetchShopifyProduct] Fetching product: ${handle}, env: ${process.env.NODE_ENV}`);
+    
+    // In development, use Admin API to fetch drafts
+    if (process.env.NODE_ENV === 'development') {
+      const adminData = await shopifyAdminRequest<{
+        productByHandle: AdminProduct | null;
+      }>({
+        query: GET_PRODUCT_BY_HANDLE_ADMIN_QUERY,
+        variables: { handle },
+      });
+
+      console.log(`[fetchShopifyProduct] Admin API response:`, adminData?.productByHandle ? 'Found' : 'Not found');
+
+      if (!adminData.productByHandle) {
+        return null;
+      }
+
+      const product = adminData.productByHandle;
+
+      // Transform Admin API response to match Storefront API structure
+      return {
+        id: product.id,
+        title: product.title,
+        handle: product.handle,
+        description: product.description,
+        descriptionHtml: product.descriptionHtml,
+        productType: product.productType,
+        tags: product.tags,
+        vendor: product.vendor,
+        seo: product.seo,
+        collectionHandle: 'products',
+        // Transform priceRangeV2 to priceRange for consistency
+        priceRange: {
+          minVariantPrice: {
+            amount: product.priceRangeV2.minVariantPrice.amount,
+            currencyCode: product.priceRangeV2.minVariantPrice.currencyCode,
+          },
+          maxVariantPrice: {
+            amount: product.priceRangeV2.maxVariantPrice.amount,
+            currencyCode: product.priceRangeV2.maxVariantPrice.currencyCode,
+          },
+        },
+        media: flattenMedia(product.media.edges.map(mediaEdge => ({
+          node: {
+            ...mediaEdge.node,
+            mediaType: mediaEdge.node.mediaContentType,
+          }
+        }))),
+        variants: product.variants.edges.map((variantEdge) => ({
+          ...variantEdge.node,
+          // Transform price to priceV2 for consistency
+          priceV2: {
+            amount: variantEdge.node.price,
+            currencyCode: product.priceRangeV2.maxVariantPrice.currencyCode,
+          },
+        })),
+      };
+    }
+
+    // Production: Use Storefront API
     const shopifyLanguage = language.toUpperCase();
     const shopifyCountry = country.toUpperCase();
 
@@ -244,10 +386,12 @@ async function _fetchShopifyProduct(
       query: GET_PRODUCT_BY_HANDLE_QUERY,
       variables: {
         handle,
-        language: shopifyLanguage, // Pass language as GraphQL variable
+        language: shopifyLanguage,
         country: shopifyCountry,
       },
     });
+
+    console.log(`[fetchShopifyProduct] Storefront API response:`, shopifyData?.productByHandle ? 'Found' : 'Not found');
 
     if (!shopifyData.productByHandle) {
       return null;
@@ -263,7 +407,7 @@ async function _fetchShopifyProduct(
       variants: product.variants.edges.map((variantEdge) => variantEdge.node),
     };
   } catch (error) {
-    console.error(`Failed to fetch Shopify product "${handle}":`, error);
+    console.error(`[fetchShopifyProduct] Failed to fetch Shopify product "${handle}":`, error);
     return null;
   }
 }
@@ -271,7 +415,7 @@ async function _fetchShopifyProduct(
 export const fetchShopifyProduct = unstable_cache(
   _fetchShopifyProduct,
   ['shopify-product'],
-  { revalidate: 3600, tags: ['product'] }
+  { revalidate: process.env.NODE_ENV === 'development' ? false : 3600, tags: ['product'] }
 );
 
 interface CollectionByHandleResponse {

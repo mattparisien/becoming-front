@@ -28,7 +28,8 @@ export async function fetchSanityData<T = unknown>(
   try {
     const result = await client.fetch<T>(query, params, {
       // Enable caching for server components
-      next: { revalidate: 60 }, // Revalidate every 60 seconds
+      // Disable cache in development to always get fresh drafts
+      next: { revalidate: process.env.NODE_ENV === 'development' ? 0 : 60 },
     })
     return result
   } catch (error) {

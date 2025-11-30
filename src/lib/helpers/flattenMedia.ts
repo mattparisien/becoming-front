@@ -5,6 +5,7 @@ import { ShopifyProduct, ShopifyProductFlattened } from '@/lib/types/shopify';
  * Handles both image and video media types
  */
 export function flattenMedia(mediaEdges: ShopifyProduct['media']['edges']): ShopifyProductFlattened['media'] {
+  console.log('mediaEdges', mediaEdges);
   const firstMedia = mediaEdges[0]?.node;
   
   if (!firstMedia) {
@@ -15,10 +16,10 @@ export function flattenMedia(mediaEdges: ShopifyProduct['media']['edges']): Shop
   }
 
   // Handle image media
-  if (firstMedia.image) {
+  if (firstMedia.image || firstMedia.mediaContentType === 'IMAGE') {
     return {
       mediaType: 'image',
-      src: firstMedia.image.url,
+      src: firstMedia.image?.url || '',
       mimeType: 'image/jpeg',
     };
   }
@@ -26,10 +27,12 @@ export function flattenMedia(mediaEdges: ShopifyProduct['media']['edges']): Shop
   // Handle video media
   if (firstMedia.sources && firstMedia.sources.length > 0) {
     // Prefer video/mp4, fallback to first available source
-    const preferredSource = firstMedia.sources.find(s => s.mimeType === 'video/mp4') || firstMedia.sources[0];
     
+    const preferredSource = firstMedia.sources.find(s => s.mimeType === 'video/mp4') || firstMedia.sources[0];
+
+
     return {
-      mediaType: firstMedia.mediaType.toLowerCase(),
+      mediaType: firstMedia.mediaType?.toLowerCase() || firstMedia.mediaContentType?.toLowerCase() || 'image',
       src: preferredSource.url,
       mimeType: preferredSource.mimeType,
     };

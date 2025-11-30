@@ -96,7 +96,7 @@ export default async function Page({ params }: Props) {
   const { country, lang, slug } = await params;
   
   const product = await getProduct({ slug, country, lang });
-
+console.log('product, ', product);
   if (!product) {
     notFound();
   }

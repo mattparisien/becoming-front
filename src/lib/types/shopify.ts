@@ -16,6 +16,7 @@ export interface ShopifyImage {
 
 export interface ShopifyMedia {
     mediaType: string;
+    mediaContentType?: string;
     image?: ShopifyImage;
     sources?: Array<{
         url: string;
@@ -87,6 +88,7 @@ export interface ShopifyProductFlattened {
         src: string;
         mediaType: string;
         mimeType?: string;
+        mediaContentType?: string;
     },
     priceRange: ShopifyPriceRange;
     variants: ShopifyVariant[];
