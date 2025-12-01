@@ -51,10 +51,10 @@ const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, cont
 
 
   return (
-    <footer className="w-screen max-h-screen-minus-header fixed bottom-0 left-0 bg-accent font-fancy pt-main-footer-offset" id="footer">
+    <footer className="w-screen max-h-screen fixed bottom-0 left-0 bg-accent font-fancy pt-main-footer-offset" id="footer">
       <div className="h-full flex flex-col">
         {/* Main Footer Content */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 px-6 sm:px-8 lg:px-12 py-8 lg:py-12">
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 px-6 sm:px-8 lg:px-12 py-5 sm:py-8 lg:py-12">
 
           {/* Left Section - Brand & Tagline */}
           <div className="lg:col-span-5 flex flex-col justify-between">
@@ -184,12 +184,14 @@ const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, cont
               >
                 {contactEmail}
               </a>
+               <div className="text-xs mt-4 text-background/50">Becoming Plugins is not affiliated, sponsored, or endorsed by Squarespace.</div>
+
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-background/10 px-6 sm:px-8 lg:px-12 py-6">
+        <div className="border-t border-background/10 px-6 sm:px-8 lg:px-12 py-5">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex flex-wrap items-center justify-center sm:justify-between gap-x-6 gap-y-2 text-background/60 text-xs font-sans w-full">
               <span className="mr-4">&copy; {new Date().getFullYear()} {legalEntityName}. {t.allRightsReserved}</span>
