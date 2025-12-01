@@ -79,6 +79,7 @@ export interface FooterTranslations {
   madeIn: string;
   contactUs: string;
   allRightsReserved: string;
+  disclaimer: string;
 }
 
 export interface PasswordProtectTranslations {
@@ -219,12 +220,14 @@ export const footerTranslations: Record<Locale, FooterTranslations> = {
     madeIn: 'Made with ♥ in Montreal, Tiohtià:ke',
     contactUs: 'Get in Touch',
     allRightsReserved: 'All rights reserved.',
+    disclaimer: 'Becoming Plugins is not affiliated, sponsored, or endorsed by Squarespace. The term "Squarespace" is the registered trademark and property of Squarespace, Inc.',
   },
   "fr": {
     followUs: 'Suivez-nous',
     madeIn: 'Construit avec ♥ à Montréal, Tiohtià:ke',
     contactUs: 'Contactez-nous',
     allRightsReserved: 'Tous droits réservés.',
+    disclaimer: 'Becoming Plugins n\'est pas affilié, parrainé ou approuvé par Squarespace. Le terme « Squarespace » est la marque déposée et la propriété de Squarespace, Inc.',
   },
 };
 

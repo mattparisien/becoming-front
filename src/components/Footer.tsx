@@ -180,11 +180,11 @@ const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, cont
               </h3>
               <a
                 href={`mailto:${contactEmail}`}
-                className="text-background hover:underline transition-colors font-sans text-lg sm:text-xl break-all"
+                className="text-background hover:underline transition-colors font-sans text-lg xl:text-xl break-all"
               >
                 {contactEmail}
               </a>
-               <div className="text-xs mt-4 text-background/50">Becoming Plugins is not affiliated, sponsored, or endorsed by Squarespace.</div>
+               <div className="text-[0.7rem] mt-4 text-background/50">{t.disclaimer}</div>
 
             </div>
           </div>
