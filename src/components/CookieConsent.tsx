@@ -142,11 +142,11 @@ const CookieConsent = ({ locale }: CookieConsentProps) => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="fixed bottom-0 left-0 right-0 z-[9999] bg-background border-t border-foreground/10 shadow-2xl"
+            className="fixed bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto sm:max-w-2xl z-[9999] bg-background border border-foreground/10 shadow-lg shadow-foreground/4 rounded-2xl"
           >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex-1">
+            <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+              <div className="flex flex-col gap-4">
+                <div>
                   <h3 className="text-lg font-semibold text-foreground mb-2 font-sans">
                     {t.title}
                   </h3>
