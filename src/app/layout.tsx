@@ -1,5 +1,5 @@
 import localFont from 'next/font/local';
-import { GoogleAnalytics } from '@next/third-parties/google';
+import ConditionalAnalytics from '@/components/ConditionalAnalytics';
 import "./globals.css";
 
 const roobert = localFont({
@@ -44,7 +44,7 @@ export default function RootLayout({
       className={`${roobert.variable} ${editeur.variable} ${dida.variable}`}
     >
       <body className='font-sans text-foreground antialiased' suppressHydrationWarning>
-        {GA_MEASUREMENT_ID && <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />}
+        {GA_MEASUREMENT_ID && <ConditionalAnalytics gaId={GA_MEASUREMENT_ID} />}
         {children}
       </body>
     </html>

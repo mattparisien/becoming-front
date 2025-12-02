@@ -80,6 +80,7 @@ export interface FooterTranslations {
   contactUs: string;
   allRightsReserved: string;
   disclaimer: string;
+  cookiePreferences: string;
 }
 
 export interface PasswordProtectTranslations {
@@ -102,6 +103,26 @@ export interface LocationModalTranslations {
   confirm: string;
   cancel: string;
   notSelected: string;
+}
+
+export interface CookieConsentTranslations {
+  title: string;
+  description: string;
+  learnMore: string;
+  acceptAll: string;
+  rejectAll: string;
+  customize: string;
+  preferencesTitle: string;
+  preferencesDescription: string;
+  necessaryTitle: string;
+  necessaryDescription: string;
+  analyticsTitle: string;
+  analyticsDescription: string;
+  marketingTitle: string;
+  marketingDescription: string;
+  alwaysOn: string;
+  savePreferences: string;
+  cancel: string;
 }
 
 export const MenuTranslations : Record<Locale, MenuTranslations> = {
@@ -221,6 +242,7 @@ export const footerTranslations: Record<Locale, FooterTranslations> = {
     contactUs: 'Get in Touch',
     allRightsReserved: 'All rights reserved.',
     disclaimer: 'Becoming Plugins is not affiliated, sponsored, or endorsed by Squarespace. The term "Squarespace" is the registered trademark and property of Squarespace, Inc.',
+    cookiePreferences: 'Cookie Preferences',
   },
   "fr": {
     followUs: 'Suivez-nous',
@@ -228,6 +250,7 @@ export const footerTranslations: Record<Locale, FooterTranslations> = {
     contactUs: 'Contactez-nous',
     allRightsReserved: 'Tous droits réservés.',
     disclaimer: 'Becoming Plugins n\'est pas affilié, parrainé ou approuvé par Squarespace. Le terme « Squarespace » est la marque déposée et la propriété de Squarespace, Inc.',
+    cookiePreferences: 'Préférences de cookies',
   },
 };
 
@@ -277,6 +300,47 @@ export const locationModalTranslations: Record<Locale, LocationModalTranslations
   },
 };
 
+export const cookieConsentTranslations: Record<Locale, CookieConsentTranslations> = {
+  "en": {
+    title: 'We Value Your Privacy',
+    description: 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.',
+    learnMore: 'Learn more',
+    acceptAll: 'Accept All',
+    rejectAll: 'Reject All',
+    customize: 'Customize',
+    preferencesTitle: 'Cookie Preferences',
+    preferencesDescription: 'We use cookies to improve your experience on our website. You can customize your preferences below.',
+    necessaryTitle: 'Necessary Cookies',
+    necessaryDescription: 'These cookies are essential for the website to function properly. They enable basic functions like page navigation and access to secure areas.',
+    analyticsTitle: 'Analytics Cookies',
+    analyticsDescription: 'These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously.',
+    marketingTitle: 'Marketing Cookies',
+    marketingDescription: 'These cookies are used to track visitors across websites to display relevant advertisements and encourage them to engage.',
+    alwaysOn: 'Always On',
+    savePreferences: 'Save Preferences',
+    cancel: 'Cancel',
+  },
+  "fr": {
+    title: 'Nous respectons votre vie privée',
+    description: 'Nous utilisons des cookies pour améliorer votre expérience de navigation, diffuser du contenu personnalisé et analyser notre trafic. En cliquant sur "Tout accepter", vous consentez à notre utilisation des cookies.',
+    learnMore: 'En savoir plus',
+    acceptAll: 'Tout accepter',
+    rejectAll: 'Tout rejeter',
+    customize: 'Personnaliser',
+    preferencesTitle: 'Préférences de cookies',
+    preferencesDescription: 'Nous utilisons des cookies pour améliorer votre expérience sur notre site Web. Vous pouvez personnaliser vos préférences ci-dessous.',
+    necessaryTitle: 'Cookies nécessaires',
+    necessaryDescription: 'Ces cookies sont essentiels au bon fonctionnement du site Web. Ils activent des fonctions de base comme la navigation sur les pages et l\'accès aux zones sécurisées.',
+    analyticsTitle: 'Cookies analytiques',
+    analyticsDescription: 'Ces cookies nous aident à comprendre comment les visiteurs interagissent avec notre site Web en collectant et en rapportant des informations de manière anonyme.',
+    marketingTitle: 'Cookies marketing',
+    marketingDescription: 'Ces cookies sont utilisés pour suivre les visiteurs sur les sites Web afin d\'afficher des publicités pertinentes et de les encourager à s\'engager.',
+    alwaysOn: 'Toujours actif',
+    savePreferences: 'Enregistrer les préférences',
+    cancel: 'Annuler',
+  },
+};
+
 export function getMenuTranslations(locale: Locale): MenuTranslations {
   return MenuTranslations[locale] || MenuTranslations[defaultLocale];
 }
@@ -303,4 +367,8 @@ export function getPasswordProtectTranslations(locale: Locale): PasswordProtectT
 
 export function getLocationModalTranslations(locale: Locale): LocationModalTranslations {
   return locationModalTranslations[locale] || locationModalTranslations[defaultLocale];
+}
+
+export function getCookieConsentTranslations(locale: Locale): CookieConsentTranslations {
+  return cookieConsentTranslations[locale] || cookieConsentTranslations[defaultLocale];
 }
