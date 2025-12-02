@@ -1,9 +1,12 @@
+'use client';
+
 import { Locale } from "@/lib/i18n/config";
 import { getFooterTranslations } from "@/lib/i18n/translations";
 import { Settings } from "@/lib/sanity/schema-types";
 import TransitionLink from "./TransitionLink";
 import { FaInstagram, FaFacebook, FaTwitter } from "react-icons/fa";
 import { ReactNode } from "react";
+import { useCookieConsent } from "@/context/CookieConsentContext";
 
 interface NavigationItem {
   label: string;
@@ -48,6 +51,7 @@ const socialMediaRegistry: Record<string, { icon: ReactNode }> = {
 
 const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, contactEmail, navigations, legalBar }: FooterProps) => {
   const t = getFooterTranslations(locale);
+  const { openPreferences } = useCookieConsent();
 
 
   return (
@@ -205,6 +209,12 @@ const Footer = ({ locale, brandName, legalEntityName, tagLine, socialLinks, cont
                     {item.label}
                   </TransitionLink>
                 ))}
+                <button
+                  onClick={openPreferences}
+                  className="hover:text-background transition-colors"
+                >
+                  {t.cookiePreferences}
+                </button>
               </div>
               <div className="hidden md:block text-background/60">
                 {t.madeIn}

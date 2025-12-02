@@ -1,4 +1,5 @@
 import { CartStoreInitializer } from "@/components/CartStoreInitializer";
+import CookieConsent from "@/components/CookieConsent";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import IntroWrapper from "@/components/IntroWrapper";
@@ -7,6 +8,7 @@ import Main from "@/components/Main";
 import MenuWrapper from "@/components/MenuWrapper";
 import PageTransitionScreen from "@/components/PageTransitionScreen";
 import { CartDrawerProvider } from "@/context/CartDrawerContext";
+import { CookieConsentProvider } from "@/context/CookieConsentContext";
 import { IntroProvider } from "@/context/IntroContext";
 import { LocationModalProvider } from "@/context/LocationModalContext";
 import { MenuProvider } from "@/context/MenuContext";
@@ -232,18 +234,21 @@ export default async function LocaleLayout({
             <MenuProvider>
               <LocationModalProvider>
                 <CartDrawerProvider>
-                  <CartStoreInitializer initialCart={serverCart} />
-                  <Header title={brand.title} countryCode={country.toUpperCase()} initialCartCount={serverCart.totalQuantity} />
-                  <MenuWrapper items={menuLinks} countryCode={country.toUpperCase()} />
-                  <IntroWrapper />
-                  <Main>
-                    <div className={`font-sans min-h-screen-minus-header transition-opacity duration-300 rounded-b-4xl pb-main-footer-offset`}>
-                      {children}
-                    </div>
-                  </Main>
-                  <PageTransitionScreen text={brand.title} />
-                  <Footer {...footer} brandName={brand.title} legalEntityName={brand.companyName} tagLine={brand.tagline} locale={lang as Locale} contactEmail={contactEmail} socialLinks={globalData?.socialLinks || []} />
-                  <LocationModal markets={markets} initialMarketValue={getCurrentLocation(country, lang, markets)} />
+                  <CookieConsentProvider>
+                    <CartStoreInitializer initialCart={serverCart} />
+                    <Header title={brand.title} countryCode={country.toUpperCase()} initialCartCount={serverCart.totalQuantity} />
+                    <MenuWrapper items={menuLinks} countryCode={country.toUpperCase()} />
+                    <IntroWrapper />
+                    <Main>
+                      <div className={`font-sans min-h-screen-minus-header transition-opacity duration-300 rounded-b-4xl pb-main-footer-offset`}>
+                        {children}
+                      </div>
+                    </Main>
+                    <PageTransitionScreen text={brand.title} />
+                    <Footer {...footer} brandName={brand.title} legalEntityName={brand.companyName} tagLine={brand.tagline} locale={lang as Locale} contactEmail={contactEmail} socialLinks={globalData?.socialLinks || []} />
+                    <LocationModal markets={markets} initialMarketValue={getCurrentLocation(country, lang, markets)} />
+                    <CookieConsent locale={lang as Locale} />
+                  </CookieConsentProvider>
                 </CartDrawerProvider>
               </LocationModalProvider>
             </MenuProvider>

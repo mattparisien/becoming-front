@@ -6,7 +6,7 @@ import { forwardRef, useState, ButtonHTMLAttributes, AnchorHTMLAttributes } from
 import TransitionLink from '@/components/TransitionLink';
 
 interface BaseButtonProps {
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   withRipple?: boolean;
@@ -56,6 +56,7 @@ const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
       primary: 'bg-foreground text-background',
       secondary: 'bg-foreground/10 text-foreground hover:bg-foreground/20',
       ghost: 'text-foreground hover:bg-foreground/5',
+      outline: 'text-foreground/70 hover:text-foreground border border-foreground/20',
     };
 
     const sizeStyles = {
