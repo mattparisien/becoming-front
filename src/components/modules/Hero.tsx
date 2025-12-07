@@ -13,13 +13,13 @@ const HeroModule = (props: HeroModuleProps) => {
 
     return <div className="min-h-[80vh] flex flex-col items-end justify-between">
         <div className="pt-20 relative w-full uppercase flex-1">
-            <p className="font-serif leading-tight text-lg md:text-xl absolute left-1/2 top-1/2 max-w-md">{subHeading}</p>
+            <p className="font-serif leading-tight text-md sm:text-lg md:text-xl absolute sm:left-1/2 top-1/2 max-w-md">{subHeading}</p>
         </div>
         <div className="tracking-tighter font-sans font-light text-[10vw] tet-foreground leading-none w-full pb-5">
             <div>Squarespace</div>
             <div className="flex items-center justify-between">
-                <div className="text-foreground/30">&</div>
-                <div>Elevated</div>
+                <div className="text-foreground/30">Built</div>
+                <div>Better</div>
             </div>
         </div>
     </div>
