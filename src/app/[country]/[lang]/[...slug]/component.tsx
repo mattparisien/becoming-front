@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import ContactFormModule from "@/components/modules/ContactForm";
+import HeroModule from "@/components/modules/Hero";
 import ProductsModule from "@/components/modules/Products";
 import TextModule from "@/components/modules/Text";
 import { SanityModule, SanityPage } from "@/lib/types/sanity";
@@ -26,9 +27,9 @@ export default function PageComponent({ page }: PageComponentProps) {
 
     const getPaddingClass = (paddingY?: string) => {
         const paddingValue = paddingY || 'sm';
-        
+
         if (paddingValue === 'none') return '';
-        
+
         return `vertical-gutters-${paddingValue}`;
     };
 
@@ -51,11 +52,18 @@ export default function PageComponent({ page }: PageComponentProps) {
                 const heightClass = getHeightClass(module.height as string | undefined);
 
                 return (
+                    <>
+                    <section>
+                        <Container className="w-full">
+                        <HeroModule/>
+                        </Container>
+                    </section>
                     <section key={module._key || index} className={`${paddingClass} ${heightClass} flex items-center justify-center`}>
                         <Container className="w-full">
                             <ModuleComponent {...module} />
                         </Container>
                     </section>
+                    </>
                 );
             })}
         </>

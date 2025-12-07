@@ -19,7 +19,7 @@ export function flattenMedia(mediaEdges: ShopifyProduct['media']['edges']): Shop
   if (firstMedia.image || firstMedia.mediaContentType === 'IMAGE') {
     return {
       mediaType: 'image',
-      src: firstMedia.image?.url || '',
+      src: firstMedia.image?.url,
       mimeType: 'image/jpeg',
     };
   }

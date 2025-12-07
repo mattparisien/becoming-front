@@ -45,24 +45,30 @@ const ProductPageComponent = ({ additionalInfo, ...product }: ProductPageCompone
           {/* Media Column - Sticky on desktop */}
           <div className="flex-1 w-full lg:w-auto lg:sticky lg:top-[calc(var(--header-height)+2rem)] lg:self-start">
             <div className="aspect-3/2 rounded-2xl overflow-hidden bg-foreground/5 relative">
-              {isVideo ? (
-                <video
-                  src={product.media.src}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                />
+              {product.media.src ? (
+                isVideo ? (
+                  <video
+                    src={product.media.src}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={product.media.src}
+                    alt={product.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority
+                  />
+                )
               ) : (
-                <Image
-                  src={product.media.src}
-                  alt={product.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  priority
-                />
+                <div className="w-full h-full flex items-center justify-center text-foreground/30">
+                  No media available
+                </div>
               )}
             </div>
           </div>

@@ -116,7 +116,7 @@ async function _fetchPage(options: FetchPageOptions): Promise<SanityPage | null>
               case 'product':
               case 'products':
                 // In development, use Admin API to fetch drafts; in production use Storefront API
-                if (process.env.NODE_ENV === 'development') {
+                if (process.env.NODE_ENV === 'deveslopment') {
                   const adminData = await shopifyAdminRequest<AdminProductsResponse>({
                     query: GET_PRODUCTS_ADMIN_QUERY,
                     variables: {
